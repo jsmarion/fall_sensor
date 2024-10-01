@@ -1,0 +1,227 @@
+substitutions:
+  name: esphome-web-c29788
+  friendly_name: ESPHome Web c29788
+
+external_components:
+  - source:
+#      type: git
+#      url: https://github.com/jsmarion/test_fall_sensor
+#      ref: main
+      type: local
+      path: .
+    components: [ c1001 ]
+    refresh: 0d
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+  # min_version: 2024.6.0
+  # name_add_mac_suffix: false
+  project:
+    name: esphome.web
+    version: main
+  # libraries: 
+  #   - https://github.com/DFRobot/DFRobot_HumanDetection
+  # includes:
+  #   - DFRobot_HumanDetection.h
+  #   - c1001.h
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+  level: VERBOSE
+  logs:
+    json: ERROR
+    sensor: DEBUG
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "M3vrwvmOYpaHCSr8cLCQXT3a8kAnFpPH3zFt6cfmRI4="
+
+# Allow Over-The-Air updates
+ota:
+- platform: esphome
+
+# # Allow provisioning Wi-Fi via serial
+# improv_serial:
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  # Set up a wifi access point
+  # ap: {}
+
+# # In combination with the `ap` this allows the user
+# # to provision wifi credentials to the device via WiFi AP.
+# captive_portal:
+
+# dashboard_import:
+#   package_import_url: github://esphome/example-configs/esphome-web/esp32.yaml@main
+#   import_full_config: true
+
+# # Sets up Bluetooth LE (Only on ESP32) to allow the user
+# # to provision wifi credentials to the device.
+# esp32_improv:
+#   authorizer: none
+
+# To have a "next url" for improv serial
+web_server:
+
+uart:
+  id: uart_02
+  tx_pin: GPIO17
+  rx_pin: GPIO16
+  baud_rate: 115200
+  debug:
+    direction: BOTH
+
+# custom_component:
+# - lambda: |-
+#     auto my_custom = new C1001(id(uart_01));
+#     return {my_custom};
+
+# c1001:
+#   - id: test_fall_sensor
+#     uart_id: uart_02
+#     the_sensor:
+#       id: the_sensor
+#     the_fall_switch:
+#       id: the_fall_switch
+# uart_demo:
+#   - id: demo
+#     uart_id: uart_02
+#     the_text:
+#       id: the_text
+#     the_sensor:
+#       id: the_sensor
+#     the_bin_output:
+#       id: the_bin_out
+#     the_flt_output:
+#       id: the_flt_out
+#     the_binsensor:
+#       id: the_binsensor
+#     the_switch:
+#       id: the_switch
+#     the_button:AC
+#       id: the_button
+
+c1001:
+  - id: test
+    uart: uart_02
+    # fall_led_switch:
+    #   name: Fall Switch
+    #   id: fall_switch
+    # c1001_text_sensor:
+    #   name: Text Sensor
+    #   id: the_text
+    voltage:
+      id: voltage
+      name: Movement
+    distance:
+      id: distance_sensor
+      name: Distance
+    mode_sensor:
+      id: mode_sensor
+      name: Working mode
+    fall_movement_range:
+      id: fall_movement_range
+      name: Fall movement range
+    fall_movement_speed:
+      id: fall_movement_speed
+      name: Fall movement speed
+    fall_presence:
+      id: fall_presence
+      name: Fall presence
+    fall_dwell:
+      id: fall_dwell
+      name: Fall dwell
+    fall_dwell_time:
+      id: fall_dwell_time
+      name: Fall dwell time
+    fall_sensitivity:
+      id: fall_sensitivity
+      name: Fall sensitivity
+    fall_event:
+      id: fall_event
+      name: Fall event
+    fall_unmanned_time:
+      id: fall_unmanned_time
+      name: Fall unmanned time
+    fall_fall_time:
+      id: fall_fall_time
+      name: Fall time
+    fall_install_height:
+      id: fall_install_height
+      name: Fall install height
+
+# text_sensor:
+#   - platform: c1001
+#     c1001_text_sensor:
+#       id: test_text_sensor
+#       name: c1001 text sensor
+
+switch:
+  - platform: c1001
+    work_mode_switch:
+      id: work_mode_switch
+      name: Work mode
+    fall_led_switch:
+      id: fall_switch
+      name: Fall LED
+
+number:
+  - platform: c1001
+    dwell_time_limit:
+      id: dwell_time_limit
+      name: Fall dwell limit
+    unmanned_time_limit:
+      id: unmanned_time_limit
+      name: Fall unmanned time limit
+    fall_time_limit:
+      id: fall_time_limit
+      name: Fall time limit
+    install_height:
+      id: install_height
+      name: Fall install height limit
+
+select:
+  - platform: c1001
+    fall_sensitivity:
+      id: fall_sensitivity_value
+      name: Fall sensitivity
+
+button:
+  - platform: c1001
+    restart:
+      id: reset
+      name: Reset
+
+# binary_sensor:
+#  - platform: c1001
+#    c1001_binary_sensor:
+#      id: test_binary_sensor
+#      name: Fall LED Light
+
+# sensor:
+  # - platform: c1001
+  #   uart_id: uart_02
+    # uart: uart_02
+
+    # name: Working mode
+
+# sensor:
+# # - platform: custom
+# #   lambda: |-
+# #     auto my_sensor = new C1001(id(uart_02));
+# #     App.register_component(my_sensor);
+# #     return {my_sensor};
+# #   sensors:
+# #     name: "My Custom Sensor"
+
+#   - platform: empty_uart_sensor
+#     name: Empty UART Sensor
