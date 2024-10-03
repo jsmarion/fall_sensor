@@ -21,6 +21,9 @@
 #define LOOP_WAIT 3
 #define SERIAL_BUFFER_LEN 150
 
+#define HUMAN_PRESENCE 0x80    //Human presence data
+#define FALL_DETECTION 0x83     //Fall data markers
+
 namespace esphome
 {
   namespace c1001
@@ -83,7 +86,10 @@ namespace esphome
       void loop() override;
       void dump_config() override;
 
+      void process_message(uint8_t *);
+
       uint16_t getFallData(eDmFall);
+      uint32_t getFirmwareVersion(void);
       uint32_t getFallTime(void);
       uint32_t getStaticResidencyTime(void);
       uint8_t getWorkMode(void);
@@ -118,6 +124,7 @@ namespace esphome
       void set_fall_event_sensor(binary_sensor::BinarySensor *s) { falleventsensor = s; }
       void set_fall_movement_speed_sensor(text_sensor::TextSensor *s) { fallmovementspeedsensor = s; }
       void set_fall_movement_range_sensor(sensor::Sensor *s) { fallmovementrangesensor = s; }
+      void set_firmware_version_sensor(text_sensor::TextSensor *s) { firmwareversionsensor = s; }
 
       void set_movement_sensor(sensor::Sensor *s) { movementsensor = s; }
       void set_distance_sensor(sensor::Sensor *s) { distancesensor = s; }
@@ -134,6 +141,9 @@ namespace esphome
       #endif
       #ifdef USE_SELECT
         SUB_SELECT(sensitivity)
+      #endif
+      #ifdef USE_SWITCH
+        SUB_SWITCH(human_presence_led)
       #endif
 
     protected:
@@ -156,6 +166,7 @@ namespace esphome
       sensor::Sensor *fallinstallheightsensor;
       text_sensor::TextSensor *fallmovementspeedsensor;
       sensor::Sensor *fallmovementrangesensor;
+      text_sensor::TextSensor *firmwareversionsensor;
 
       sensor::Sensor *movementsensor;
       sensor::Sensor *distancesensor;

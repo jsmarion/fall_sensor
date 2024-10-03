@@ -77,6 +77,6 @@ async def to_code(config):
         cg.add(c1001_component.set_fall_time_number(n))
 
     if install_height_config := config.get(CONF_INSTALL_HEIGHT):
-        n = await number.new_number(install_height_config, min_value=1, max_value=60, step=1)
+        n = await number.new_number(install_height_config, min_value=100, max_value=300, step=10)
         await cg.register_parented(n, config[CONF_C1001_ID])
         cg.add(c1001_component.set_install_height_number(n))

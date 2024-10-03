@@ -27,6 +27,7 @@ CONF_FALL_INSTALL_HEIGHT = "fall_install_height"
 CONF_FALL_FALL_TIME = "fall_fall_time"
 CONF_FALL_SENSITIVITY = "fall_sensitivity"
 CONF_FALL_EVENT = "fall_event"
+CONF_FIRMWARE_VERSION = "firmware_version"
 # CONF_THE_SWITCH = "fall_led_switch"
 CONF_MODE = "mode_sensor"
 
@@ -83,6 +84,7 @@ CONFIG_SCHEMA = cv.Schema({
         state_class=STATE_CLASS_NONE).extend(),
     cv.Optional(CONF_FALL_EVENT): binary_sensor.binary_sensor_schema(binary_sensor.BinarySensor).extend(),
    # cv.Optional(CONF_THE_SWITCH): switch.SWITCH_SCHEMA.extend({cv.GenerateID(): cv.declare_id(C1001FallLEDSwitch)}),
+    cv.Optional(CONF_FIRMWARE_VERSION): text_sensor.text_sensor_schema(text_sensor.TextSensor).extend(),
     cv.Optional(CONF_MODE): text_sensor.text_sensor_schema(text_sensor.TextSensor).extend(),
 }).extend(uart.UART_DEVICE_SCHEMA)
 
@@ -143,6 +145,11 @@ async def to_code(config):
         ms = await binary_sensor.new_binary_sensor(config[CONF_FALL_EVENT])
         cg.add(var.set_fall_event_sensor(ms))
 
+    if CONF_FIRMWARE_VERSION in config:
+        sens = await text_sensor.new_text_sensor(config[CONF_FIRMWARE_VERSION])
+        cg.add(var.set_firmware_version_sensor(sens))
+
     if CONF_MODE in config:
         sens = await text_sensor.new_text_sensor(config[CONF_MODE])
         cg.add(var.set_mode_text_sensor(sens))
+

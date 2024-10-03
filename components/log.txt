@@ -1,0 +1,439 @@
+Processing esphome-web-c29788 (board: esp32dev; framework: arduino; platform: platformio/espressif32@5.4.0)
+--------------------------------------------------------------------------------
+HARDWARE: ESP32 240MHz, 320KB RAM, 4MB Flash
+ - toolchain-xtensa-esp32 @ 8.4.0+2021r2-patch5
+Dependency Graph
+|-- AsyncTCP-esphome @ 2.1.3
+|-- WiFi @ 2.0.0
+|-- FS @ 2.0.0
+|-- Update @ 2.0.0
+|-- ESPAsyncWebServer-esphome @ 3.2.2
+|-- ESPmDNS @ 2.0.0
+|-- noise-c @ 0.1.6
+|-- ArduinoJson @ 6.18.5
+RAM:   [=         ]  14.2% (used 46612 bytes from 327680 bytes)
+Flash: [=======   ]  65.2% (used 1195781 bytes from 1835008 bytes)
+========================= [SUCCESS] Took 3.50 seconds =========================
+Found multiple options for uploading, please choose one:
+  [1] /dev/ttyUSB0 (USB Serial Converter - USB Serial Converter)
+  [2] /dev/ttyUSB1 (CP2104 USB to UART Bridge Controller - CP2104 USB to UART Bridge Controller)
+  [3] Over The Air (esphome-web-c29788.local)
+(number): esptool.py v4.7.0
+Serial port /dev/ttyUSB1
+Connecting....
+Chip is ESP32-D0WD-V3 (revision v3.0)
+Features: WiFi, BT, Dual Core, 240MHz, VRef calibration in efuse, Coding Scheme None
+Crystal is 40MHz
+MAC: cc:db:a7:c2:97:88
+Uploading stub...
+Running stub...
+Stub running...
+Changing baud rate to 460800
+Changed.
+Configuring flash size...
+Auto-detected Flash size: 4MB
+Flash will be erased from 0x00010000 to 0x00135fff...
+Flash will be erased from 0x00001000 to 0x00005fff...
+Flash will be erased from 0x00008000 to 0x00008fff...
+Flash will be erased from 0x0000e000 to 0x0000ffff...
+Compressed 1201552 bytes to 744280...
+Writing at 0x00010000... (2 %)Writing at 0x0001ae89... (4 %)Writing at 0x00024e35... (6 %)Writing at 0x00029410... (8 %)Writing at 0x0002f901... (10 %)Writing at 0x000407b2... (13 %)Writing at 0x0004b853... (15 %)Writing at 0x000513d6... (17 %)Writing at 0x00057782... (19 %)Writing at 0x0005d0ed... (21 %)Writing at 0x00063500... (23 %)Writing at 0x000690aa... (26 %)Writing at 0x0006e944... (28 %)Writing at 0x00074239... (30 %)Writing at 0x0007a050... (32 %)Writing at 0x0007f6e2... (34 %)Writing at 0x00085166... (36 %)Writing at 0x0008a559... (39 %)Writing at 0x0008f9a9... (41 %)Writing at 0x00094e0d... (43 %)Writing at 0x0009a158... (45 %)Writing at 0x0009f2c2... (47 %)Writing at 0x000a4506... (50 %)Writing at 0x000a97b1... (52 %)Writing at 0x000affdd... (54 %)Writing at 0x000b5a58... (56 %)Writing at 0x000bb2ad... (58 %)Writing at 0x000c0669... (60 %)Writing at 0x000c58fa... (63 %)Writing at 0x000cacc6... (65 %)Writing at 0x000d02e1... (67 %)Writing at 0x000d58ab... (69 %)Writing at 0x000db10c... (71 %)Writing at 0x000e1087... (73 %)Writing at 0x000e6c3a... (76 %)Writing at 0x000edb12... (78 %)Writing at 0x000f4b2b... (80 %)Writing at 0x000fcf1c... (82 %)Writing at 0x00103609... (84 %)Writing at 0x0010ae56... (86 %)Writing at 0x001127bf... (89 %)Writing at 0x0011b827... (91 %)Writing at 0x00122a80... (93 %)Writing at 0x00127edf... (95 %)Writing at 0x0012d599... (97 %)Writing at 0x00132f67... (100 %)Wrote 1201552 bytes (744280 compressed) at 0x00010000 in 17.3 seconds (effective 554.8 kbit/s)...
+Hash of data verified.
+Compressed 17440 bytes to 12128...
+Writing at 0x00001000... (100 %)Wrote 17440 bytes (12128 compressed) at 0x00001000 in 0.6 seconds (effective 215.3 kbit/s)...
+Hash of data verified.
+Compressed 3072 bytes to 144...
+Writing at 0x00008000... (100 %)Wrote 3072 bytes (144 compressed) at 0x00008000 in 0.1 seconds (effective 292.8 kbit/s)...
+Hash of data verified.
+Compressed 8192 bytes to 47...
+Writing at 0x0000e000... (100 %)Wrote 8192 bytes (47 compressed) at 0x0000e000 in 0.2 seconds (effective 387.8 kbit/s)...
+Hash of data verified.
+
+Leaving...
+Hard resetting via RTS pin...
+[17:47:47]ON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+[17:47:47]configsip: 0, SPIWP:0xee
+[17:47:47]clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+[17:47:47]mode:DIO, clock div:2
+[17:47:47]load:0x3fff0030,len:1184
+[17:47:47]load:0x40078000,len:13132
+[17:47:47]load:0x40080400,len:3036
+[17:47:47]entry 0x400805e4
+[17:47:47][     6][D][esp32-hal-cpu.c:244] setCpuFrequencyMhz(): PLL: 480 / 2 = 240 Mhz, APB: 80000000 Hz
+[17:47:47][I][logger:156]: Log initialized
+[17:47:47][C][safe_mode:079]: There have been 0 suspected unsuccessful boot attempts
+[17:47:47][D][esp32.preferences:114]: Saving 1 preferences to flash...
+[17:47:47][V][esp32.preferences:126]: sync: key: 233825507, len: 4
+[17:47:47][D][esp32.preferences:143]: Saving 1 preferences to flash: 0 cached, 1 written, 0 failed
+[17:47:47][I][app:029]: Running through setup()...
+[17:47:47][V][app:030]: Sorting components by setup priority...
+[17:47:47][C][uart.arduino_esp32:077]: Setting up UART...
+[17:47:48][D][uart_debug:114]: <<< 53:59:80:02:00:01:02:31:54:43
+[17:47:48][D][uart_debug:114]: >>> 53:59:02:A8:00:01:0F:66:54:43
+[17:47:48][D][uart_debug:114]: <<< 53:59:02:A8:00:01:01:58:54:43
+[17:47:48][D][switch:055]: 'Fall LED': Sending state OFF
+[17:47:48][D][switch:055]: 'Work mode': Sending state OFF
+[17:47:48][C][wifi:048]: Setting up WiFi...
+[17:47:48][C][wifi:061]: Starting WiFi...
+[17:47:48][C][wifi:062]:   Local MAC: CC:DB:A7:C2:97:88
+[17:47:48][V][esp32.preferences:059]: nvs_get_blob('3633775464'): ESP_ERR_NVS_NOT_FOUND - the key might not be set yet
+[17:47:48][V][wifi_esp32:067]: Enabling STA.
+[17:47:48][   577][D][WiFiGeneric.cpp:929] _eventCallback(): Arduino Event: 0 - WIFI_READY
+[17:47:48][V][wifi_esp32:486][arduino_events]: Event: WiFi ready
+[17:47:48][   668][V][WiFiGeneric.cpp:338] _arduino_event_cb(): STA Started
+[17:47:48][   669][D][WiFiGeneric.cpp:929] _eventCallback(): Arduino Event: 2 - STA_START
+[17:47:48][V][wifi_esp32:497][arduino_events]: Event: WiFi STA start
+[17:47:48][D][uart_debug:114]: >>> 53:59:01:84:00:01:0F:41:54:43:53:59:01:84:00:01:0F:41:54:43:53:59:02:A8:00:01:0F:66:54:43
+[17:47:48][V][c1001.sensor:445]: message incorrect length (requested: 6, received: 20); discarding
+[17:47:48][D][uart_debug:114]: <<< 53:59:80:03:00:01:02:32:54:43:53:59:01:84:00:01:01:33:54:43
+[17:47:48][D][uart_debug:114]: <<< 53:59:01:84:00:01:01:33:54:43
+[17:47:48][D][c1001.sensor:069]: Switch: Publishing Work Mode state 0
+[17:47:48][V][text_sensor:013]: 'Working mode': Received new state fall
+[17:47:48][D][text_sensor:064]: 'Working mode': Sending state 'fall'
+[17:47:48][D][uart_debug:114]: <<< 53:59:02:A8:00:01:01:58:54:43
+[17:47:48][D][uart_debug:114]: >>> 53:59:80:81:00:01:0F:BD:54:43
+[17:47:48][D][binary_sensor:036]: 'Fall presence': Sending state ON
+[17:47:48][D][uart_debug:114]: <<< 53:59:80:81:00:01:01:AF:54:43
+[17:47:49][D][uart_debug:114]: >>> 53:59:80:82:00:01:0F:BE:54:43
+[17:47:49][V][text_sensor:013]: 'Fall movement speed': Received new state Active
+[17:47:49][D][text_sensor:064]: 'Fall movement speed': Sending state 'Active'
+[17:47:49][D][c1001.sensor:287]: Body movement 2
+[17:47:49][D][sensor:094]: 'Movement': Sending state 2.00000  with 0 decimals of accuracy
+[17:47:49][D][uart_debug:114]: <<< 53:59:80:82:00:01:02:B1:54:43:53:59:80:03:00:01:02:32:54:43
+[17:47:49][D][uart_debug:114]: >>> 53:59:80:83:00:01:0F:BF:54:43
+[17:47:49][D][sensor:094]: 'Fall movement range': Sending state 2.00000  with 0 decimals of accuracy
+[17:47:49][D][uart_debug:114]: <<< 53:59:80:83:00:01:02:B2:54:43
+[17:47:50][D][uart_debug:114]: >>> 53:59:83:81:00:01:0F:C0:54:43
+[17:47:50][D][binary_sensor:036]: 'Fall event': Sending state OFF
+[17:47:50][D][c1001.sensor:287]: Body movement 2
+[17:47:50][D][sensor:094]: 'Movement': Sending state 2.00000  with 0 decimals of accuracy
+[17:47:50][D][uart_debug:114]: <<< 53:59:83:81:00:01:00:B1:54:43:53:59:80:03:00:01:02:32:54:43
+[17:47:50][D][uart_debug:114]: >>> 53:59:83:8D:00:01:0F:CC:54:43
+[17:47:50][D][sensor:094]: 'Fall sensitivity': Sending state 3.00000  with 0 decimals of accuracy
+[17:47:50][D][select:015]: 'Fall sensitivity': Sending state 3 (index 3)
+[17:47:50][D][uart_debug:114]: <<< 53:59:83:8D:00:01:03:C0:54:43
+[17:47:51][D][c1001.sensor:280]: Body stillness 1
+[17:47:51][D][uart_debug:114]: <<< 53:59:80:02:00:01:01:30:54:43
+[17:47:51][D][uart_debug:114]: >>> 53:59:83:85:00:01:0F:C4:54:43
+[17:47:51][D][binary_sensor:036]: 'Fall dwell': Sending state OFF
+[17:47:51][D][uart_debug:114]: <<< 53:59:83:85:00:01:00:B5:54:43
+[17:47:51][D][c1001.sensor:287]: Body movement 1
+[17:47:51][D][sensor:094]: 'Movement': Sending state 1.00000  with 0 decimals of accuracy
+[17:47:51][D][uart_debug:114]: <<< 53:59:80:03:00:01:01:31:54:43
+[17:47:51][D][uart_debug:114]: >>> 53:59:83:8A:00:01:0F:C9:54:43
+[17:47:51][D][sensor:094]: 'Fall dwell time': Sending state 60.00000 s with 0 decimals of accuracy
+[17:47:51][D][number:012]: 'Fall dwell limit': Sending state 60.000000
+[17:47:51][D][uart_debug:114]: <<< 53:59:83:8A:00:04:00:00:00:3C:F9:54:43
+[17:47:52][D][uart_debug:114]: >>> 53:59:80:92:00:01:0F:CE:54:43
+[17:47:52][D][sensor:094]: 'Fall unmanned time': Sending state 20.00000 s with 0 decimals of accuracy
+[17:47:52][D][number:012]: 'Fall unmanned time limit': Sending state 20.000000
+[17:47:52][D][c1001.sensor:287]: Body movement 1
+[17:47:52][D][sensor:094]: 'Movement': Sending state 1.00000  with 0 decimals of accuracy
+[17:47:52][D][uart_debug:114]: <<< 53:59:80:92:00:04:00:00:00:14:D6:54:43:53:59:80:03:00:01:01:31:54:43
+[17:47:52][D][uart_debug:114]: >>> 53:59:06:82:00:01:0F:44:54:43
+[17:47:52][D][sensor:094]: 'Fall install height': Sending state 240.00000 cm with 0 decimals of accuracy
+[17:47:52][D][number:012]: 'Fall install height limit': Sending state 240.000000
+[17:47:52][D][uart_debug:114]: <<< 53:59:06:82:00:02:00:F0:26:54:43
+[17:47:53][D][uart_debug:114]: >>> 53:59:83:8C:00:01:0F:CB:54:43
+[17:47:53][D][sensor:094]: 'Fall time': Sending state 20.00000 s with 0 decimals of accuracy
+[17:47:53][D][number:012]: 'Fall time limit': Sending state 20.000000
+[17:47:53][D][uart_debug:114]: <<< 53:59:83:8C:00:04:00:00:00:14:D3:54:43
+[17:47:53][D][c1001.sensor:287]: Body movement 1
+[17:47:53][D][sensor:094]: 'Movement': Sending state 1.00000  with 0 decimals of accuracy
+[17:47:53][D][uart_debug:114]: <<< 53:59:80:03:00:01:01:31:54:43
+[17:47:53][D][uart_debug:114]: >>> 53:59:80:81:00:01:0F:BD:54:43
+[17:47:53][D][uart_debug:114]: <<< 53:59:80:81:00:01:01:AF:54:43
+[17:47:54][D][uart_debug:114]: >>> 53:59:80:82:00:01:0F:BE:54:43
+[17:47:54][V][text_sensor:013]: 'Fall movement speed': Received new state Still
+[17:47:54][D][text_sensor:064]: 'Fall movement speed': Sending state 'Still'
+[17:47:54][  6494][V][WiFiGeneric.cpp:381] _arduino_event_cb(): SCAN Done: ID: 128, Status: 0, Results: 5
+[17:47:54][  6495][D][WiFiGeneric.cpp:929] _eventCallback(): Arduino Event: 1 - SCAN_DONE
+[17:47:54][V][wifi_esp32:491][arduino_events]: Event: WiFi Scan Done status=0 number=5 scan_id=128
+[17:47:54][D][wifi:497]: Found networks:
+[17:47:54][I][wifi:541]: - 'marion' (74:83:C2:7B:96:0A) ▂▄▆█
+[17:47:54][D][wifi:542]:     Channel: 11
+[17:47:54][D][wifi:543]:     RSSI: -71 dB
+[17:47:54][I][wifi:541]: - 'marion' (74:83:C2:DF:93:7E) ▂▄▆█
+[17:47:54][D][wifi:542]:     Channel: 6
+[17:47:54][D][wifi:543]:     RSSI: -76 dB
+[17:47:54][D][wifi:546]: - '' (B0:95:75:E1:4D:CD) ▂▄▆█
+[17:47:54][D][wifi:546]: - '' (7A:83:C2:7B:96:0A) ▂▄▆█
+[17:47:54][D][wifi:546]: - '' (D8:07:B6:42:C4:96) ▂▄▆█
+[17:47:54][I][wifi:313]: WiFi Connecting to 'marion'...
+[17:47:54][V][wifi:315]: Connection Params:
+[17:47:54][V][wifi:316]:   SSID: 'marion'
+[17:47:54][V][wifi:319]:   BSSID: 74:83:C2:7B:96:0A
+[17:47:54][V][wifi:349]:   Password: '2cool4school'
+[17:47:54][V][wifi:354]:   Channel: 11
+[17:47:54][V][wifi:363]:   Using DHCP IP
+[17:47:54][V][wifi:365]:   Hidden: NO
+[17:47:54][D][uart_debug:114]: <<< 53:59:80:82:00:01:01:B0:54:43
+[17:47:54][D][c1001.sensor:287]: Body movement 1
+[17:47:54][D][sensor:094]: 'Movement': Sending state 1.00000  with 0 decimals of accuracy
+[17:47:54][D][uart_debug:114]: <<< 53:59:80:03:00:01:01:31:54:43
+[17:47:54][D][uart_debug:114]: >>> 53:59:80:83:00:01:0F:BF:54:43
+[17:47:54][D][sensor:094]: 'Fall movement range': Sending state 1.00000  with 0 decimals of accuracy
+[17:47:54][D][uart_debug:114]: <<< 53:59:80:83:00:01:01:B1:54:43
+[17:47:54][  7233][V][WiFiGeneric.cpp:353] _arduino_event_cb(): STA Connected: SSID: marion, BSSID: 74:83:c2:7b:96:0a, Channel: 11, Auth: WPA2_PSK
+[17:47:54][  7235][D][WiFiGeneric.cpp:929] _eventCallback(): Arduino Event: 4 - STA_CONNECTED
+[17:47:54][V][wifi_esp32:516][arduino_events]: Event: Connected ssid='marion' bssid=74:83:C2:7B:96:0A channel=11, authmode=WPA2 PSK
+[17:47:54][  7257][V][WiFiGeneric.cpp:367] _arduino_event_cb(): STA Got New IP:192.168.1.128
+[17:47:54][  7265][D][WiFiGeneric.cpp:929] _eventCallback(): Arduino Event: 7 - STA_GOT_IP
+[17:47:54][  7270][D][WiFiGeneric.cpp:991] _eventCallback(): STA IP: 192.168.1.128, MASK: 255.255.255.0, GW: 192.168.1.1
+[17:47:54][V][wifi_esp32:570][arduino_events]: Event: Got IP static_ip=192.168.1.128 gateway=192.168.1.1
+[17:47:54][I][wifi:617]: WiFi Connected!
+[17:47:54][C][wifi:428]:   Local MAC: CC:DB:A7:C2:97:88
+[17:47:54][C][wifi:433]:   SSID: 'marion'
+[17:47:54][C][wifi:436]:   IP Address: 192.168.1.128
+[17:47:54][C][wifi:440]:   BSSID: 74:83:C2:7B:96:0A
+[17:47:54][C][wifi:441]:   Hostname: 'esphome-web-c29788'
+[17:47:54][C][wifi:443]:   Signal strength: -74 dB ▂▄▆█
+[17:47:54][V][wifi:445]:   Priority: 0.0
+[17:47:54][C][wifi:447]:   Channel: 11
+[17:47:54][C][wifi:448]:   Subnet: 255.255.255.0
+[17:47:54][C][wifi:449]:   Gateway: 192.168.1.1
+[17:47:54][C][wifi:450]:   DNS1: 192.168.1.1
+[17:47:54][C][wifi:451]:   DNS2: 0.0.0.0
+[17:47:54][C][web_server:100]: Setting up web server...
+[17:47:54][C][api:025]: Setting up Home Assistant API server...
+[17:47:54][I][app:062]: setup() finished successfully!
+[17:47:55][W][component:170]: Component wifi cleared Warning flag
+[17:47:55][W][component:157]: Component api set Warning flag: unspecified
+[17:47:55][I][app:100]: ESPHome version 2024.8.0 compiled on Oct  1 2024, 17:41:30
+[17:47:55][I][app:102]: Project esphome.web version main
+[17:47:55][C][wifi:600]: WiFi:
+[17:47:55][C][wifi:428]:   Local MAC: CC:DB:A7:C2:97:88
+[17:47:55][C][wifi:433]:   SSID: 'marion'
+[17:47:55][C][wifi:436]:   IP Address: 192.168.1.128
+[17:47:55][C][wifi:440]:   BSSID: 74:83:C2:7B:96:0A
+[17:47:55][C][wifi:441]:   Hostname: 'esphome-web-c29788'
+[17:47:55][C][wifi:443]:   Signal strength: -72 dB ▂▄▆█
+[17:47:55][V][wifi:445]:   Priority: 0.0
+[17:47:55][C][wifi:447]:   Channel: 11
+[17:47:55][C][wifi:448]:   Subnet: 255.255.255.0
+[17:47:55][C][wifi:449]:   Gateway: 192.168.1.1
+[17:47:55][C][wifi:450]:   DNS1: 192.168.1.1
+[17:47:55][C][wifi:451]:   DNS2: 0.0.0.0
+[17:47:55][C][logger:185]: Logger:
+[17:47:55][C][logger:186]:   Level: VERBOSE
+[17:47:55][C][logger:188]:   Log Baud Rate: 115200
+[17:47:55][C][logger:189]:   Hardware UART: UART0
+[17:47:55][C][logger:193]:   Level for 'json': ERROR
+[17:47:55][C][logger:193]:   Level for 'sensor': DEBUG
+[17:47:55][D][uart_debug:114]: >>> 53:59:83:81:00:01:0F:C0:54:43
+[17:47:55][C][uart.arduino_esp32:151]: UART Bus 1:
+[17:47:55][C][uart.arduino_esp32:152]:   TX Pin: GPIO17
+[17:47:55][C][uart.arduino_esp32:153]:   RX Pin: GPIO16
+[17:47:55][C][uart.arduino_esp32:155]:   RX Buffer Size: 256
+[17:47:55][C][uart.arduino_esp32:157]:   Baud Rate: 115200 baud
+[17:47:55][C][uart.arduino_esp32:158]:   Data Bits: 8
+[17:47:55][C][uart.arduino_esp32:159]:   Parity: NONE
+[17:47:55][C][uart.arduino_esp32:160]:   Stop bits: 1
+[17:47:55][C][c1001.sensor:460]: C1001 fall sensor
+[17:47:55][C][c1001.sensor:011]: C1001 Fall LED switch
+[17:47:55][C][c1001.sensor:046]: C1001 Work mode switch
+[17:47:55][C][web_server:145]: Web Server:
+[17:47:55][C][web_server:146]:   Address: esphome-web-c29788.local:80
+[17:47:55][C][mdns:116]: mDNS:
+[17:47:55][C][mdns:117]:   Hostname: esphome-web-c29788
+[17:47:55][V][mdns:118]:   Services:
+[17:47:55][V][mdns:120]:   - _esphomelib, _tcp, 6053
+[17:47:55][V][mdns:122]:     TXT: friendly_name = ESPHome Web c29788
+[17:47:55][V][mdns:122]:     TXT: version = 2024.8.0
+[17:47:55][V][mdns:122]:     TXT: mac = ccdba7c29788
+[17:47:55][V][mdns:122]:     TXT: platform = ESP32
+[17:47:55][V][mdns:122]:     TXT: board = esp32dev
+[17:47:55][V][mdns:122]:     TXT: network = wifi
+[17:47:55][V][mdns:122]:     TXT: api_encryption = Noise_NNpsk0_25519_ChaChaPoly_SHA256
+[17:47:55][V][mdns:122]:     TXT: project_name = esphome.web
+[17:47:55][V][mdns:122]:     TXT: project_version = main
+[17:47:55][V][mdns:120]:   - _http, _tcp, 80
+[17:47:55][D][uart_debug:114]: <<< 53:59:83:81:00:01:00:B1:54:43
+[17:47:55][C][esphome.ota:073]: Over-The-Air updates:
+[17:47:55][C][esphome.ota:074]:   Address: esphome-web-c29788.local:3232
+[17:47:55][C][esphome.ota:075]:   Version: 2
+[17:47:55][C][safe_mode:018]: Safe Mode:
+[17:47:55][C][safe_mode:020]:   Boot considered successful after 60 seconds
+[17:47:55][C][safe_mode:021]:   Invoke after 10 boot attempts
+[17:47:55][C][safe_mode:023]:   Remain in safe mode for 300 seconds
+[17:47:55][C][api:139]: API Server:
+[17:47:55][C][api:140]:   Address: esphome-web-c29788.local:6053
+[17:47:55][C][api:142]:   Using noise encryption: YES
+[17:47:55][D][c1001.sensor:287]: Body movement 1
+[17:47:55][D][sensor:094]: 'Movement': Sending state 1.00000  with 0 decimals of accuracy
+[17:47:55][D][uart_debug:114]: <<< 53:59:80:03:00:01:01:31:54:43
+[17:47:55][D][uart_debug:114]: >>> 53:59:83:8D:00:01:0F:CC:54:43
+[17:47:55][D][sensor:094]: 'Fall sensitivity': Sending state 3.00000  with 0 decimals of accuracy
+[17:47:55][D][select:015]: 'Fall sensitivity': Sending state 3 (index 3)
+[17:47:55][D][uart_debug:114]: <<< 53:59:83:8D:00:01:03:C0:54:43
+[17:47:56][D][api:102]: Accepted 192.168.1.203
+[17:47:56][D][api:102]: Accepted 192.168.1.203
+[17:47:56][W][component:170]: Component api cleared Warning flag
+[17:47:56][W][component:237]: Component api took a long time for an operation (95 ms).
+[17:47:56][W][component:238]: Components should block for at most 30 ms.
+[17:47:56][D][uart_debug:114]: >>> 53:59:83:85:00:01:0F:C4:54:43
+[17:47:56][V][api.connection:1370]: Hello from client: 'Home Assistant 2024.9.3' | 192.168.1.203 | API Version 1.10
+[17:47:56][V][api.connection:1370]: Hello from client: 'ESPHome Logs 2024.9.2' | 192.168.1.203 | API Version 1.10
+[17:47:56][D][api.connection:1388]: Home Assistant 2024.9.3 (192.168.1.203): Connected successfully
+[17:47:56][D][api.connection:1388]: ESPHome Logs 2024.9.2 (192.168.1.203): Connected successfully
+[17:47:56][I][app:100]: ESPHome version 2024.8.0 compiled on Oct  1 2024, 17:41:30
+[17:47:56][I][app:102]: Project esphome.web version main
+[17:47:56][C][wifi:600]: WiFi:
+[17:47:56][C][wifi:428]:   Local MAC: CC:DB:A7:C2:97:88
+[17:47:56][C][wifi:433]:   SSID: 'marion'
+[17:47:56][C][wifi:436]:   IP Address: 192.168.1.128
+[17:47:56][C][wifi:440]:   BSSID: 74:83:C2:7B:96:0A
+[17:47:56][C][wifi:441]:   Hostname: 'esphome-web-c29788'
+[17:47:56][C][wifi:443]:   Signal strength: -74 dB ▂▄▆█
+[17:47:56][V][wifi:445]:   Priority: 0.0
+[17:47:56][C][wifi:447]:   Channel: 11
+[17:47:56][C][wifi:448]:   Subnet: 255.255.255.0
+[17:47:56][C][wifi:449]:   Gateway: 192.168.1.1
+[17:47:56][C][wifi:450]:   DNS1: 192.168.1.1
+[17:47:56][C][wifi:451]:   DNS2: 0.0.0.0
+[17:47:56][D][uart_debug:114]: <<< 53:59:83:85:00:01:00:B5:54:43:53:59:80:03:00:01:01:31:54:43
+[17:47:56][V][c1001.sensor:445]: message incorrect length (requested: 6, received: 20); discarding
+[17:47:56][C][logger:185]: Logger:
+[17:47:56][C][logger:186]:   Level: VERBOSE
+[17:47:56][C][logger:188]:   Log Baud Rate: 115200
+[17:47:56][C][logger:189]:   Hardware UART: UART0
+[17:47:56][C][logger:193]:   Level for 'json': ERROR
+[17:47:56][C][logger:193]:   Level for 'sensor': DEBUG
+[17:47:56][C][uart.arduino_esp32:151]: UART Bus 1:
+[17:47:56][C][uart.arduino_esp32:152]:   TX Pin: GPIO17
+[17:47:56][C][uart.arduino_esp32:153]:   RX Pin: GPIO16
+[17:47:56][C][uart.arduino_esp32:155]:   RX Buffer Size: 256
+[17:47:56][C][uart.arduino_esp32:157]:   Baud Rate: 115200 baud
+[17:47:56][C][uart.arduino_esp32:158]:   Data Bits: 8
+[17:47:56][C][uart.arduino_esp32:159]:   Parity: NONE
+[17:47:56][C][uart.arduino_esp32:160]:   Stop bits: 1
+[17:47:56][C][c1001.sensor:460]: C1001 fall sensor
+[17:47:56][C][c1001.sensor:011]: C1001 Fall LED switch
+[17:47:56][C][c1001.sensor:046]: C1001 Work mode switch
+[17:47:56][C][web_server:145]: Web Server:
+[17:47:56][C][web_server:146]:   Address: esphome-web-c29788.local:80
+[17:47:56][C][mdns:116]: mDNS:
+[17:47:56][C][mdns:117]:   Hostname: esphome-web-c29788
+[17:47:56][V][mdns:118]:   Services:
+[17:47:56][V][mdns:120]:   - _esphomelib, _tcp, 6053
+[17:47:56][V][mdns:122]:     TXT: friendly_name = ESPHome Web c29788
+[17:47:56][V][mdns:122]:     TXT: version = 2024.8.0
+[17:47:56][V][mdns:122]:     TXT: mac = ccdba7c29788
+[17:47:56][V][mdns:122]:     TXT: platform = ESP32
+[17:47:56][V][mdns:122]:     TXT: board = esp32dev
+[17:47:56][V][mdns:122]:     TXT: network = wifi
+[17:47:56][V][mdns:122]:     TXT: api_encryption = Noise_NNpsk0_25519_ChaChaPoly_SHA256
+[17:47:56][V][mdns:122]:     TXT: project_name = esphome.web
+[17:47:56][V][mdns:122]:     TXT: project_version = main
+[17:47:56][V][mdns:120]:   - _http, _tcp, 80
+[17:47:56][C][esphome.ota:073]: Over-The-Air updates:
+[17:47:56][C][esphome.ota:074]:   Address: esphome-web-c29788.local:3232
+[17:47:56][C][esphome.ota:075]:   Version: 2
+[17:47:56][D][uart_debug:114]: >>> 53:59:83:8A:00:01:0F:C9:54:43
+[17:47:56][C][safe_mode:018]: Safe Mode:
+[17:47:56][C][safe_mode:020]:   Boot considered successful after 60 seconds
+[17:47:56][C][safe_mode:021]:   Invoke after 10 boot attempts
+[17:47:56][C][safe_mode:023]:   Remain in safe mode for 300 seconds
+[17:47:56][C][api:139]: API Server:
+[17:47:56][C][api:140]:   Address: esphome-web-c29788.local:6053
+[17:47:56][C][api:142]:   Using noise encryption: YES
+[17:47:56][D][sensor:094]: 'Fall dwell time': Sending state 60.00000 s with 0 decimals of accuracy
+[17:47:56][D][number:012]: 'Fall dwell limit': Sending state 60.000000
+[17:47:56][D][uart_debug:114]: <<< 53:59:83:8A:00:04:00:00:00:3C:F9:54:43
+[17:47:57][D][uart_debug:114]: >>> 53:59:80:92:00:01:0F:CE:54:43
+[17:47:57][D][sensor:094]: 'Fall unmanned time': Sending state 20.00000 s with 0 decimals of accuracy
+[17:47:57][D][number:012]: 'Fall unmanned time limit': Sending state 20.000000
+[17:47:57][D][c1001.sensor:287]: Body movement 1
+[17:47:57][D][sensor:094]: 'Movement': Sending state 1.00000  with 0 decimals of accuracy
+[17:47:57][D][uart_debug:114]: <<< 53:59:80:92:00:04:00:00:00:14:D6:54:43:53:59:80:03:00:01:01:31:54:43
+[17:47:57][D][uart_debug:114]: >>> 53:59:06:82:00:01:0F:44:54:43
+[17:47:57][D][sensor:094]: 'Fall install height': Sending state 240.00000 cm with 0 decimals of accuracy
+[17:47:57][D][number:012]: 'Fall install height limit': Sending state 240.000000
+[17:47:57][D][uart_debug:114]: <<< 53:59:06:82:00:02:00:F0:26:54:43
+[17:47:58][D][uart_debug:114]: <<< 53:59:80:03:00:01:01:31:54:43
+[17:47:58][D][c1001.sensor:287]: Body movement 1
+[17:47:58][D][sensor:094]: 'Movement': Sending state 1.00000  with 0 decimals of accuracy
+[17:47:58][D][uart_debug:114]: >>> 53:59:83:8C:00:01:0F:CB:54:43
+[17:47:58][D][sensor:094]: 'Fall time': Sending state 20.00000 s with 0 decimals of accuracy
+[17:47:58][D][number:012]: 'Fall time limit': Sending state 20.000000
+[17:47:58][D][uart_debug:114]: <<< 53:59:83:8C:00:04:00:00:00:14:D3:54:43
+[17:47:58][D][uart_debug:114]: >>> 53:59:80:81:00:01:0F:BD:54:43
+[17:47:58][D][uart_debug:114]: <<< 53:59:80:81:00:01:01:AF:54:43
+[17:47:59][D][uart_debug:114]: <<< 53:59:80:03:00:01:01:31:54:43
+[17:47:59][D][c1001.sensor:287]: Body movement 1
+[17:47:59][D][sensor:094]: 'Movement': Sending state 1.00000  with 0 decimals of accuracy
+[17:47:59][D][uart_debug:114]: >>> 53:59:80:82:00:01:0F:BE:54:43
+[17:47:59][V][text_sensor:013]: 'Fall movement speed': Received new state Still
+[17:47:59][D][text_sensor:064]: 'Fall movement speed': Sending state 'Still'
+[17:47:59][D][uart_debug:114]: <<< 53:59:80:82:00:01:01:B0:54:43
+[17:47:59][D][uart_debug:114]: >>> 53:59:80:83:00:01:0F:BF:54:43
+[17:47:59][D][sensor:094]: 'Fall movement range': Sending state 1.00000  with 0 decimals of accuracy
+[17:47:59][D][uart_debug:114]: <<< 53:59:80:83:00:01:01:B1:54:43
+[17:48:00][D][uart_debug:114]: <<< 53:59:80:03:00:01:01:31:54:43
+[17:48:00][D][c1001.sensor:287]: Body movement 1
+[17:48:00][D][sensor:094]: 'Movement': Sending state 1.00000  with 0 decimals of accuracy
+[17:48:00][D][uart_debug:114]: >>> 53:59:83:81:00:01:0F:C0:54:43
+[17:48:00][D][uart_debug:114]: <<< 53:59:83:81:00:01:00:B1:54:43
+[17:48:00][D][uart_debug:114]: >>> 53:59:83:8D:00:01:0F:CC:54:43
+[17:48:00][D][sensor:094]: 'Fall sensitivity': Sending state 3.00000  with 0 decimals of accuracy
+[17:48:00][D][select:015]: 'Fall sensitivity': Sending state 3 (index 3)
+[17:48:00][D][uart_debug:114]: <<< 53:59:83:8D:00:01:03:C0:54:43
+[17:48:01][D][uart_debug:114]: <<< 53:59:80:03:00:01:01:31:54:43
+[17:48:01][D][c1001.sensor:287]: Body movement 1
+[17:48:01][D][sensor:094]: 'Movement': Sending state 1.00000  with 0 decimals of accuracy
+[17:48:01][D][uart_debug:114]: >>> 53:59:83:85:00:01:0F:C4:54:43
+[17:48:01][D][uart_debug:114]: <<< 53:59:83:85:00:01:00:B5:54:43
+[17:48:01][D][uart_debug:114]: >>> 53:59:83:8A:00:01:0F:C9:54:43
+[17:48:01][D][sensor:094]: 'Fall dwell time': Sending state 60.00000 s with 0 decimals of accuracy
+[17:48:01][D][number:012]: 'Fall dwell limit': Sending state 60.000000
+[17:48:01][D][uart_debug:114]: <<< 53:59:83:8A:00:04:00:00:00:3C:F9:54:43
+[17:48:02][D][c1001.sensor:287]: Body movement 1
+[17:48:02][D][sensor:094]: 'Movement': Sending state 1.00000  with 0 decimals of accuracy
+[17:48:02][D][uart_debug:114]: <<< 53:59:80:03:00:01:01:31:54:43
+[17:48:02][D][uart_debug:114]: >>> 53:59:80:92:00:01:0F:CE:54:43
+[17:48:02][D][sensor:094]: 'Fall unmanned time': Sending state 20.00000 s with 0 decimals of accuracy
+[17:48:02][D][number:012]: 'Fall unmanned time limit': Sending state 20.000000
+[17:48:02][D][uart_debug:114]: <<< 53:59:80:92:00:04:00:00:00:14:D6:54:43
+[17:48:02][D][uart_debug:114]: >>> 53:59:06:82:00:01:0F:44:54:43
+[17:48:02][D][sensor:094]: 'Fall install height': Sending state 240.00000 cm with 0 decimals of accuracy
+[17:48:02][D][number:012]: 'Fall install height limit': Sending state 240.000000
+[17:48:02][D][uart_debug:114]: <<< 53:59:06:82:00:02:00:F0:26:54:43
+[17:48:03][D][c1001.sensor:287]: Body movement 1
+[17:48:03][D][sensor:094]: 'Movement': Sending state 1.00000  with 0 decimals of accuracy
+[17:48:03][D][uart_debug:114]: <<< 53:59:80:03:00:01:01:31:54:43
+[17:48:03][D][uart_debug:114]: >>> 53:59:83:8C:00:01:0F:CB:54:43
+[17:48:03][D][sensor:094]: 'Fall time': Sending state 20.00000 s with 0 decimals of accuracy
+[17:48:03][D][number:012]: 'Fall time limit': Sending state 20.000000
+[17:48:03][D][uart_debug:114]: <<< 53:59:83:8C:00:04:00:00:00:14:D3:54:43
+[17:48:03][D][uart_debug:114]: >>> 53:59:80:81:00:01:0F:BD:54:43
+[17:48:03][D][uart_debug:114]: <<< 53:59:80:81:00:01:01:AF:54:43
+[17:48:04][D][c1001.sensor:287]: Body movement 1
+[17:48:04][D][sensor:094]: 'Movement': Sending state 1.00000  with 0 decimals of accuracy
+[17:48:04][D][uart_debug:114]: <<< 53:59:80:03:00:01:01:31:54:43
+[17:48:04][D][uart_debug:114]: >>> 53:59:80:82:00:01:0F:BE:54:43
+[17:48:04][V][text_sensor:013]: 'Fall movement speed': Received new state Still
+[17:48:04][D][text_sensor:064]: 'Fall movement speed': Sending state 'Still'
+[17:48:04][D][uart_debug:114]: <<< 53:59:80:82:00:01:01:B0:54:43
+[17:48:04][D][uart_debug:114]: >>> 53:59:80:83:00:01:0F:BF:54:43
+[17:48:04][D][sensor:094]: 'Fall movement range': Sending state 1.00000  with 0 decimals of accuracy
+[17:48:04][D][uart_debug:114]: <<< 53:59:80:83:00:01:01:B1:54:43
+[17:48:05][D][c1001.sensor:287]: Body movement 1
+[17:48:05][D][sensor:094]: 'Movement': Sending state 1.00000  with 0 decimals of accuracy
+[17:48:05][D][uart_debug:114]: <<< 53:59:80:03:00:01:01:31:54:43
+[17:48:05][D][uart_debug:114]: >>> 53:59:83:81:00:01:0F:C0:54:43
+[17:48:05][D][uart_debug:114]: <<< 53:59:83:81:00:01:00:B1:54:43
+[17:48:05][D][uart_debug:114]: >>> 53:59:83:8D:00:01:0F:CC:54:43
+[17:48:05][D][sensor:094]: 'Fall sensitivity': Sending state 3.00000  with 0 decimals of accuracy
+[17:48:05][D][select:015]: 'Fall sensitivity': Sending state 3 (index 3)
+[17:48:05][D][uart_debug:114]: <<< 53:59:83:8D:00:01:03:C0:54:43
+[17:48:06][D][c1001.sensor:287]: Body movement 1
+[17:48:06][D][sensor:094]: 'Movement': Sending state 1.00000  with 0 decimals of accuracy
+[17:48:06][D][uart_debug:114]: <<< 53:59:80:03:00:01:01:31:54:43
+[17:48:06][D][uart_debug:114]: >>> 53:59:83:85:00:01:0F:C4:54:43
+[17:48:06][D][uart_debug:114]: <<< 53:59:83:85:00:01:00:B5:54:43
+[17:48:06][D][uart_debug:114]: >>> 53:59:83:8A:00:01:0F:C9:54:43
+[17:48:06][D][sensor:094]: 'Fall dwell time': Sending state 60.00000 s with 0 decimals of accuracy
+[17:48:06][D][number:012]: 'Fall dwell limit': Sending state 60.000000
+[17:48:06][D][uart_debug:114]: <<< 53:59:83:8A:00:04:00:00:00:3C:F9:54:43
+[17:48:07][D][c1001.sensor:287]: Body movement 1
+[17:48:07][D][sensor:094]: 'Movement': Sending state 1.00000  with 0 decimals of accuracy

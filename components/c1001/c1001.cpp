@@ -1,3 +1,6 @@
+#include "sstream"
+#include "queue"
+
 #include "esphome/core/log.h"
 #include "c1001.h"
 
@@ -17,15 +20,44 @@ namespace esphome
       }
     }
 
+    // set up queue to process responses
+    std::queue<std::vector<uint8_t>> _q;
+    
+    void routineSubroutine(const std::vector<uint8_t>& a)
+    {
+      // ESP_LOGV(TAG, "Entering RoutineSubroutine, size = %d", a.size()));
+      _q.push(a);
+    }
+
     void C1001Component::setup()
     {
-      // ESP_LOGD(TAG, "Calling states in setup()");
+
+
+      ESP_LOGD(TAG, "Calling states in setup()");
       this->getWorkMode(); // initialize mode state
-      this->getLEDLightState(eFALLLed);
+      this->getLEDLightState(eFALLLed); // this is not working
+      this->getFirmwareVersion();
     }
 
     void C1001Component::update()
     {
+      if (!_q.empty())
+      {
+        std::vector<uint8_t> a = _q.front();
+        _q.pop();
+        // ESP_LOGV(TAG, "POP: Size of a %d", a.size());
+
+        static uint8_t buffer[SERIAL_BUFFER_LEN] = {0};
+
+        for (int ii = 0; ii < a.size(); ii++)
+          {
+            // ESP_LOGV(TAG, "Popped char 0x%02X", a[ii]);
+            buffer[ii] = a[ii];
+          }
+          process_message(buffer);
+          ESP_LOGV(TAG, "Queue size %d", _q.size());
+      }
+      // ESP_LOGD(TAG, "Calling update()");
       // uint8_t state = getWorkMode();
       // publish_state(state);
       // if (this->modetextsensor->get_state() == "fall") {
@@ -121,308 +153,60 @@ namespace esphome
       if (loopwait > LOOP_WAIT)
       { // some time has passed without receiving another character. this should be the end of a message.
         // ESP_LOGV(TAG, "message recieved len=%d", index);
-        uint16_t msglen = 0;
         if ((buffer[0] == 0x53) && (buffer[1] == 0x59) && (buffer[index - 2] == 0x54) && (buffer[index - 1] == 0x43))
         { // message starts with the right preamble
-          msglen = (buffer[4] << 8) | buffer[5];
-          if (index == msglen + 9) // messasge has correct lengtheFallingMode
+          uint16_t msglen = (buffer[4] << 8) | buffer[5];
+          if (index != msglen + 9) // messasge has correct lengtheFallingMode
           {
-            uint8_t csum = sumData(6 + msglen, buffer);
-            if (csum == buffer[msglen + 6]) // checksum ok
+            ESP_LOGV(TAG, "message incorrect length (expected: %d, received: %d); discarding", msglen + 5, index);
+
+            // ESP_LOGV(TAG, "Begin");
+            static uint8_t temp[SERIAL_BUFFER_LEN] = {0};
+            for (uint8_t ii = 0; ii < index; ii++)
             {
-              uint8_t con = buffer[2];
-              uint8_t cmd = buffer[3];
-              // ESP_LOGD(TAG, "con 0x%02X, cmd 0x%02X, msglen %d received", con, cmd, msglen);
+              // ESP_LOGV(TAG, "char = 0x%02X", buffer[ii]);
+              uint8_t jj = 0;
 
-              switch (con)
-              {
-              case 0x01:
-                switch (cmd)
-                {
-                case 0x01:
-                  if (msglen == 1)
+              if (buffer[ii] == 0x53) {           //Receive header frame 1
+                temp[jj++] = buffer[ii];
+                // ESP_LOGV(TAG, "got one = 0x%02X", temp[jj-1]);
+                ii++;
+                if (buffer[ii] == 0x59 ) {         //Receive header frame 2
+                  temp[jj++] = buffer[ii];
+                  // ESP_LOGV(TAG, "got one = 0x%02X", temp[jj-1]);
+                  ii++;
+                  while ((buffer[ii-2] != 0x54) || (buffer[ii-1] != 0x43))
                   {
-                    ESP_LOGD(TAG, "Heartbeat");
+                    temp[jj++] = buffer[ii++];
+                    // ESP_LOGV(TAG, "got one = 0x%02X", temp[jj-1]);
+                    if (ii > index)
+                      break;
                   }
-                  break;
-                case 0x03:
-                  if (msglen == 1)
-                  {
-                    // memcpy(this->messagedata,buffer,SOLIS_S5_SERIAL_BUFFER_LEN); // copy message for processing on next update cycle
-                    // this->messagelength = index; // length > 0 indicates the message data has been updated / ready for parsing
-                    // ESP_LOGD(TAG, "Fall LED mode change %d", buffer[6]);
-                    bool state = ((buffer[6] != 0) ? true : false);
-                    if (FallLEDCallback_ != NULL)
-                      FallLEDCallback_(state);
-                    if (FallLEDStateCallback_ != NULL)
-                      FallLEDStateCallback_(state);
-                  }
-                  break;
-                case 0x84:
-                  //   if (msglen == 1)
-                  //   {
-                  //     // memcpy(this->messagedata,buffer,SOLIS_S5_SERIAL_BUFFER_LEN); // copy message for processing on next update cycle
-                  //     // this->messagelength = index; // length > 0 indicates the message data has been updated / ready for parsing
-                  //     ESP_LOGD(TAG, "Fall LED mode change %d", buffer[6]);
-                  //     bool state = ((buffer[6] != 0) ? true : false);
-                  //     if (FallLEDCallback_ != NULL)
-                  //       FallLEDCallback_(state);
-                  //     if (FallLEDStateCallback_ != NULL)
-                  //       FallLEDStateCallback_(state);
-                  //   }
-                  break;
-                default:
-                  ESP_LOGD(TAG, "Unknown message con=0x%02X cmd=0x%02X", con, cmd);
-                  break;
+                  temp[jj] = '\0';
+                  // ESP_LOGV(TAG, "Close temp, jj = %d", jj);
+                  routineSubroutine({ &temp[0], &temp[jj] } ); // creates a temp uint8_t vector
                 }
-                break;
-              case 0x02:
-                switch (cmd)
-                {
-                case 0xa8:
-                  if (msglen == 1)
-                  {
-                    // memcpy(this->messagedata,buffer,SOLIS_S5_SERIAL_BUFFER_LEN); // copy message for processing on next update cycle
-                    // this->messagelength = index; // length > 0 indicates the message data has been updated / ready for parsing
-                    // ESP_LOGD(TAG, "Publishing work mode %d", buffer[6]);
-                    bool state = ((buffer[6] == 1) ? false : true);
-                    if (WorkModeCallback_ != NULL)
-                      WorkModeCallback_(state);
-
-                    if (this->modetextsensor != nullptr)
-                    {
-                      std::string text_state = ((buffer[6] == 1) ? "fall" : ((buffer[6] == 2) ? "sleep" : "unknown"));
-                      this->modetextsensor->publish_state(text_state);
-                    }
-                  }
-                  break;
-                default:
-                  ESP_LOGD(TAG, "Unknown message con=0x%02X cmd=0x%02X", con, cmd);
-                  break;
-                }
-                break;
-              case 0x06:
-                switch (cmd)
-                {
-                case 0x82:
-                  if (msglen == 2)
-                  {
-                    uint32_t install_height = buffer[6] << 8 | buffer[7];
-                    // ESP_LOGD(TAG, "Install height %d", install_height);
-                    if (this->fallinstallheightsensor != nullptr)
-                      this->fallinstallheightsensor->publish_state(install_height);
-                    if (this->install_height_number_ != nullptr)
-                      this->install_height_number_->publish_state(install_height);
-                  }
-                  break;
-                default:
-                  ESP_LOGD(TAG, "Unknown message con=0x%02X cmd=0x%02X", con, cmd);
-                  break;
-                }
-                break;
-              case 0x07:
-                switch (cmd)
-                {
-                case 0x07:
-                  ESP_LOGD(TAG, "Position out of bounds %d", buffer[6]);
-                  break;
-                default:
-                  ESP_LOGD(TAG, "Unknown message con=0x%02X cmd=0x%02X", con, cmd);
-                  break;
-                }
-                break;
-              case 0x80:
-                switch (cmd)
-                {
-                case 0x01:
-                  if (msglen == 1)
-                  {
-                    ESP_LOGD(TAG, "Proactive presence reporting %d", buffer[6]);
-                  }
-                  break;
-                case 0x02:
-                  if (msglen == 1)
-                  {
-                    ESP_LOGD(TAG, "Body stillness %d", buffer[6]);
-                  }
-                  break;
-                case 0x03:
-                  if (msglen == 1)
-                  {
-                    uint8_t state = buffer[6];
-                    ESP_LOGD(TAG, "Body movement %d", state);
-                    if (BodyMovementCallback_ != NULL)
-                      BodyMovementCallback_(state);
-
-                    if (this->movementsensor != nullptr)
-                    {
-                      this->movementsensor->publish_state((float)state);
-                    }
-                  }
-                  break;
-                case 0x04:
-                  if (msglen == 2)
-                  {
-                    uint16_t state = (buffer[6] << 8) | buffer[7];
-                    // ESP_LOGD(TAG, "Human distance %d", state);
-                    if (this->distancesensor != nullptr)
-                      this->distancesensor->publish_state((float)state);
-                  }
-                  break;
-                case 0x05:
-                  if (msglen == 6)
-                  {
-                    ESP_LOGD(TAG, "Body orientation x=%hd, y=%hd, z=%hd", (short)((buffer[6] << 8) | buffer[7]),
-                             (short)((buffer[8] << 8) | buffer[9]), (short)((buffer[10] << 8) | buffer[11]));
-                  }
-                  break;
-                // case 0x12:    // Fall time
-                //   if (msglen == 4)
-                //   {
-                //     uint32_t unmanned_time = buffer[6] << 24 | buffer[7] << 16 | buffer[8] << 8 | buffer[9];
-                //     ESP_LOGD(TAG, "Fall unmanned time %d", unmanned_time);
-                //     if (this->fallunmannedtimesensor != nullptr)
-                //       this->fallunmannedtimesensor->publish_state(unmanned_time);
-                //     if (this->unmanned_time_number_ != nullptr)
-                //       this->unmanned_time_number_->publish_state(unmanned_time);
-                //     // uint32_t fall_time = buffer[6] << 24 | buffer[7] << 16 | buffer[8] << 8 | buffer[9];
-                //     // ESP_LOGD(TAG, "Fall fall time %d", fall_time);
-                //     // if (this->fallfalltimesensor != nullptr)
-                //     //   this->fallfalltimesensor->publish_state(fall_time);
-                //     // if (this->fall_time_number_ != nullptr)
-                //     //   this->fall_time_number_->publish_state(fall_time);
-                //   }
-                //   break;
-                case 0x81:      // eHumanPresence
-                  // ESP_LOGD(TAG, "Human presence %d", buffer[6]);
-                  if (this->fallpresencesensor != nullptr)
-                    this->fallpresencesensor->publish_state((bool)buffer[6]);
-                  break;
-                case 0x82:      // eHumanMovement
-                  // ESP_LOGD(TAG, "Movement speed %d", buffer[6]);
-                  if (this->fallmovementspeedsensor != nullptr)
-                  {
-                    std::string mstate = "Undefined";
-                    if (buffer[6] == 0)
-                      mstate = "None";
-                    else if (buffer[6] == 1)
-                      mstate = "Still";
-                    else if (buffer[6] == 2)
-                      mstate = "Active";
-                    this->fallmovementspeedsensor->publish_state(mstate);
-                  }
-                  break;
-                case 0x83:    // eHumanMovingRange
-                  // ESP_LOGD(TAG, "Body movement range %d", buffer[6]);
-                  if (this->fallmovementrangesensor != nullptr)
-                    this->fallmovementrangesensor->publish_state(buffer[6]);
-                  break;
-                case 0x84:    // eHumanDistance
-                  // TODO: need to implement
-                  ESP_LOGD(TAG, "Unknown message con=0x%02X cmd=0x%02X", con, cmd);
-                  break;
-                case 0x92:    // Unmanned time
-                  if (msglen == 4)
-                  {
-                    uint32_t unmanned_time = buffer[6] << 24 | buffer[7] << 16 | buffer[8] << 8 | buffer[9];
-                    // ESP_LOGD(TAG, "Fall unmanned time %d", unmanned_time);
-                    if (this->fallunmannedtimesensor != nullptr)
-                      this->fallunmannedtimesensor->publish_state(unmanned_time);
-                    if (this->unmanned_time_number_ != nullptr)
-                      this->unmanned_time_number_->publish_state(unmanned_time);
-                  }
-                  break;
-                default:
-                  ESP_LOGD(TAG, "Unknown message con=0x%02X cmd=0x%02X", con, cmd);
-                  break;
-                }
-                break;
-
-              case 0x83:
-                switch (cmd)
-                {
-                case 0x0C:    // Fall time
-                case 0x8C:    // Fall time
-                  if (msglen == 4)
-                  {
-                    uint32_t fall_time = buffer[6] << 24 | buffer[7] << 16 | buffer[8] << 8 | buffer[9];
-                    // ESP_LOGD(TAG, "Fall fall time %d, msglen %d", fall_time, msglen);
-                    if (this->fallfalltimesensor != nullptr)
-                      this->fallfalltimesensor->publish_state(fall_time);
-                    if (this->fall_time_number_ != nullptr)
-                      this->fall_time_number_->publish_state(fall_time);
-                  }
-                  break;
-                case 0x81:        // eFallState
-                  if (msglen == 1)
-                  {
-                    // ESP_LOGD(TAG, "Fall state %d", buffer[6]);
-                    if (this->falleventsensor != nullptr)
-                      this->falleventsensor->publish_state((bool)buffer[6]);
-                  }
-                  break;
-                case 0x85:        // estaticResidencyState
-                  if (msglen == 1)
-                  {
-                    // ESP_LOGD(TAG, "Stationary residency %d", buffer[6]);
-                    if (this->falldwellsensor != nullptr)
-                      this->falldwellsensor->publish_state((bool)buffer[6]);
-                  }
-                  break;
-                case 0x8A:        // Dwell time
-                  if (msglen == 4)
-                  {
-                    uint32_t dwell_time = buffer[6] << 24 | buffer[7] << 16 | buffer[8] << 8 | buffer[9];
-                    // ESP_LOGD(TAG, "Fall dwell time %d", dwell_time);
-                    if (this->falldwelltimesensor != nullptr)
-                      this->falldwelltimesensor->publish_state(dwell_time);
-                    if (this->dwell_time_number_ != nullptr)
-                      this->dwell_time_number_->publish_state(dwell_time);
-                  }
-                  break;
-                case 0x8B:        // estaticResidencySwitch
-                  // TODO: need to implement
-                  ESP_LOGD(TAG, "Unknown message con=0x%02X cmd=0x%02X", con, cmd);
-                  break;
-                case 0x8D:        // eFallSensitivity
-                  if (msglen == 1)
-                  {
-                    // ESP_LOGD(TAG, "Fall Sensitivity %d", buffer[6]);
-                    uint8_t sensitivity = (uint8_t)buffer[6];
-                    if (this->fallsensitivitysensor != nullptr)
-                      this->fallsensitivitysensor->publish_state(sensitivity);
-                    if (this->sensitivity_select_ != nullptr)
-                      this->sensitivity_select_->publish_state(std::to_string(sensitivity));
-                  }
-                  break;
-                case 0x91:        // eFallBreakHeight
-                  // TODO: need to implement
-                  ESP_LOGD(TAG, "Unknown message con=0x%02X cmd=0x%02X", con, cmd);
-                  break;
-                case 0x95:        // eHeightRatioSwitch
-                  // TODO: need to implement
-                  ESP_LOGD(TAG, "Unknown message con=0x%02X cmd=0x%02X", con, cmd);
-                  break;
-                default:
-                  ESP_LOGD(TAG, "Unknown message con=0x%02X cmd=0x%02X", con, cmd);
-                  break;
-                }
-                break;
-
-              default:
-                ESP_LOGD(TAG, "Unknown message con=0x%02X cmd=0x%02X", con, cmd);
-                break;
               }
+              else
+              {
+                ESP_LOGV(TAG, "Bad start char = 0x%02X", buffer[ii]);
+              }
+              ii--;
             }
-            else
-            {
-              ESP_LOGV(TAG, "message checksum fail; discarding. csum = 0x%02X, check = 0x%02X", buffer[msglen + 4], csum);
-            }
+            ESP_LOGV(TAG, "Done");
           }
           else
           {
-            ESP_LOGV(TAG, "message incorrect length (requested: %d, received: %d); discarding", msglen + 5, index);
-          }
+            uint8_t csum = sumData(6 + msglen, buffer);
+            if (csum != buffer[msglen + 6]) // checksum ok
+            {
+              ESP_LOGV(TAG, "message checksum fail; discarding. csum = 0x%02X, check = 0x%02X", buffer[msglen + 4], csum);
+            }
+            else
+            {
+              process_message(buffer);
+            }
+         }
         }
         else
         {
@@ -439,6 +223,309 @@ namespace esphome
       ESP_LOGCONFIG(TAG, "C1001 fall sensor");
     }
 
+    void C1001Component::process_message(uint8_t *buffer)
+    {
+      uint16_t msglen = (buffer[4] << 8) | buffer[5];
+      uint8_t con = buffer[2];
+      uint8_t cmd = buffer[3];
+      // ESP_LOGD(TAG, "con 0x%02X, cmd 0x%02X, msglen %d received", con, cmd, msglen);
+
+      switch (con)
+      {
+      case 0x01:
+        switch (cmd)
+        {
+        case 0x01:
+          if (msglen == 1)
+          {
+            ESP_LOGD(TAG, "Heartbeat");
+          }
+          break;
+        case 0x03:
+          if (msglen == 1)
+          {
+            // memcpy(this->messagedata,buffer,SOLIS_S5_SERIAL_BUFFER_LEN); // copy message for processing on next update cycle
+            // this->messagelength = index; // length > 0 indicates the message data has been updated / ready for parsing
+            // ESP_LOGD(TAG, "Fall LED mode change %d", buffer[6]);
+            bool state = ((buffer[6] != 0) ? true : false);
+            if (FallLEDCallback_ != NULL)
+              FallLEDCallback_(state);
+            if (FallLEDStateCallback_ != NULL)
+              FallLEDStateCallback_(state);
+          }
+          break;
+        case 0x04:
+          if (msglen == 1)
+          {
+            ESP_LOGD(TAG, "Human presence LED state %d", buffer[6]);
+          }
+          break;
+        case 0x84:
+          if (msglen == 1)
+          {
+            ESP_LOGD(TAG, "Fall LED mode change %d", buffer[6]);
+            bool state = ((buffer[6] != 0) ? true : false);
+            if (FallLEDCallback_ != NULL)
+              FallLEDCallback_(state);
+            if (FallLEDStateCallback_ != NULL)
+              FallLEDStateCallback_(state);
+          }
+          break;
+        default:
+          ESP_LOGD(TAG, "Unknown message con=0x%02X cmd=0x%02X", con, cmd);
+          break;
+        }
+        break;
+      case 0x02:
+        switch (cmd)
+        {
+        case 0xA4:
+          {
+            std::ostringstream convert;
+            for (int ii = 6; ii < msglen + 6; ii++) {
+                convert << (char)(buffer[ii]);
+            }
+            std::string key_string = convert.str();
+            ESP_LOGD(TAG, "Firmware version %s", key_string.c_str());
+            if (this->firmwareversionsensor != nullptr)
+              this->firmwareversionsensor->publish_state(key_string);
+          }
+          break;
+        case 0xA8:
+          if (msglen == 1)
+          {
+            // memcpy(this->messagedata,buffer,SOLIS_S5_SERIAL_BUFFER_LEN); // copy message for processing on next update cycle
+            // this->messagelength = index; // length > 0 indicates the message data has been updated / ready for parsing
+            // ESP_LOGD(TAG, "Publishing work mode %d", buffer[6]);
+            bool state = ((buffer[6] == 1) ? false : true);
+            if (WorkModeCallback_ != NULL)
+              WorkModeCallback_(state);
+
+            if (this->modetextsensor != nullptr)
+            {
+              std::string text_state = ((buffer[6] == 1) ? "fall" : ((buffer[6] == 2) ? "sleep" : "unknown"));
+              this->modetextsensor->publish_state(text_state);
+            }
+          }
+          break;
+        default:
+          ESP_LOGD(TAG, "Unknown message con=0x%02X cmd=0x%02X", con, cmd);
+          break;
+        }
+        break;
+      case 0x05:
+        switch (cmd)
+        {
+        case 0x01:      // initlization complete message
+          if (msglen == 2)
+          {
+          ESP_LOGD(TAG, "Initialization complete.");
+          this->setup();
+          }
+        }
+        break;
+      case 0x06:
+        switch (cmd)
+        {
+        case 0x02:      // Install height
+        case 0x82:
+          if (msglen == 2)
+          {
+            uint32_t install_height = buffer[6] << 8 | buffer[7];
+            // ESP_LOGD(TAG, "Install height %d", install_height);
+            if (this->fallinstallheightsensor != nullptr)
+              this->fallinstallheightsensor->publish_state(install_height);
+            if (this->install_height_number_ != nullptr)
+              this->install_height_number_->publish_state(install_height);
+          }
+          break;
+        default:
+          ESP_LOGD(TAG, "Unknown message con=0x%02X cmd=0x%02X", con, cmd);
+          break;
+        }
+        break;
+      case 0x07:
+        switch (cmd)
+        {
+        case 0x07:
+          ESP_LOGD(TAG, "Position out of bounds %d", buffer[6]);
+          break;
+        default:
+          ESP_LOGD(TAG, "Unknown message con=0x%02X cmd=0x%02X", con, cmd);
+          break;
+        }
+        break;
+      case HUMAN_PRESENCE:
+        switch (cmd)
+        {
+        case 0x01:
+          if (msglen == 1)
+          {
+            ESP_LOGD(TAG, "Proactive presence reporting %d", buffer[6]);
+          }
+          break;
+        case 0x02:
+          if (msglen == 1)
+          {
+            ESP_LOGD(TAG, "Body stillness %d", buffer[6]);
+          }
+          break;
+        case 0x03:
+          if (msglen == 1)
+          {
+            uint8_t state = buffer[6];
+            ESP_LOGD(TAG, "Body movement %d", state);
+            if (BodyMovementCallback_ != NULL)
+              BodyMovementCallback_(state);
+
+            if (this->movementsensor != nullptr)
+            {
+              this->movementsensor->publish_state((float)state);
+            }
+          }
+          break;
+        case 0x04:
+          if (msglen == 2)
+          {
+            uint16_t state = (buffer[6] << 8) | buffer[7];
+            // ESP_LOGD(TAG, "Human distance %d", state);
+            if (this->distancesensor != nullptr)
+              this->distancesensor->publish_state((float)state);
+          }
+          break;
+        case 0x05:
+          if (msglen == 6)
+          {
+            ESP_LOGD(TAG, "Body orientation x=%hd, y=%hd, z=%hd", (short)((buffer[6] << 8) | buffer[7]),
+                      (short)((buffer[8] << 8) | buffer[9]), (short)((buffer[10] << 8) | buffer[11]));
+          }
+          break;
+        case 0x81:      // eHumanPresence
+          // ESP_LOGD(TAG, "Human presence %d", buffer[6]);
+          if (this->fallpresencesensor != nullptr)
+            this->fallpresencesensor->publish_state((bool)buffer[6]);
+          break;
+        case 0x82:      // eHumanMovement
+          // ESP_LOGD(TAG, "Movement speed %d", buffer[6]);
+          if (this->fallmovementspeedsensor != nullptr)
+          {
+            std::string mstate = "Undefined";
+            if (buffer[6] == 0)
+              mstate = "None";
+            else if (buffer[6] == 1)
+              mstate = "Still";
+            else if (buffer[6] == 2)
+              mstate = "Active";
+            this->fallmovementspeedsensor->publish_state(mstate);
+          }
+          break;
+        case 0x83:    // eHumanMovingRange
+          // ESP_LOGD(TAG, "Body movement range %d", buffer[6]);
+          if (this->fallmovementrangesensor != nullptr)
+            this->fallmovementrangesensor->publish_state(buffer[6]);
+          break;
+        case 0x84:    // eHumanDistance
+          // TODO: need to implement
+          ESP_LOGD(TAG, "Unknown message con=0x%02X cmd=0x%02X", con, cmd);
+          break;
+        case 0x12:    // Unmanned time
+        case 0x92:
+          if (msglen == 4)
+          {
+            uint32_t unmanned_time = buffer[6] << 24 | buffer[7] << 16 | buffer[8] << 8 | buffer[9];
+            // ESP_LOGD(TAG, "Fall unmanned time %d", unmanned_time);
+            if (this->fallunmannedtimesensor != nullptr)
+              this->fallunmannedtimesensor->publish_state(unmanned_time);
+            if (this->unmanned_time_number_ != nullptr)
+              this->unmanned_time_number_->publish_state(unmanned_time);
+          }
+          break;
+        default:
+          ESP_LOGD(TAG, "Unknown message con=0x%02X cmd=0x%02X", con, cmd);
+          break;
+        }
+        break;
+
+      case FALL_DETECTION:
+        switch (cmd)
+        {
+        case 0x0C:      // Fall time
+        case 0x8C:
+          if (msglen == 4)
+          {
+            uint32_t fall_time = buffer[6] << 24 | buffer[7] << 16 | buffer[8] << 8 | buffer[9];
+            // ESP_LOGD(TAG, "Fall fall time %d, msglen %d", fall_time, msglen);
+            if (this->fallfalltimesensor != nullptr)
+              this->fallfalltimesensor->publish_state(fall_time);
+            if (this->fall_time_number_ != nullptr)
+              this->fall_time_number_->publish_state(fall_time);
+          }
+          break;
+        case 0x81:        // eFallState
+          if (msglen == 1)
+          {
+            // ESP_LOGD(TAG, "Fall state %d", buffer[6]);
+            if (this->falleventsensor != nullptr)
+              this->falleventsensor->publish_state((bool)buffer[6]);
+          }
+          break;
+        case 0x05:        // estaticResidencyState
+        case 0x85:
+          if (msglen == 1)
+          {
+            // ESP_LOGD(TAG, "Stationary residency %d", buffer[6]);
+            if (this->falldwellsensor != nullptr)
+              this->falldwellsensor->publish_state((bool)buffer[6]);
+          }
+          break;
+        case 0x0A:        // Dwell time
+        case 0x8A:
+          if (msglen == 4)
+          {
+            uint32_t dwell_time = buffer[6] << 24 | buffer[7] << 16 | buffer[8] << 8 | buffer[9];
+            // ESP_LOGD(TAG, "Fall dwell time %d", dwell_time);
+            if (this->falldwelltimesensor != nullptr)
+              this->falldwelltimesensor->publish_state(dwell_time);
+            if (this->dwell_time_number_ != nullptr)
+              this->dwell_time_number_->publish_state(dwell_time);
+          }
+          break;
+        case 0x8B:        // estaticResidencySwitch
+          // TODO: need to implement
+          ESP_LOGD(TAG, "Unknown message con=0x%02X cmd=0x%02X", con, cmd);
+          break;
+        case 0x0D:        // eFallSensitivity
+        case 0x8D:
+          if (msglen == 1)
+          {
+            // ESP_LOGD(TAG, "Fall Sensitivity %d", buffer[6]);
+            uint8_t sensitivity = (uint8_t)buffer[6];
+            if (this->fallsensitivitysensor != nullptr)
+              this->fallsensitivitysensor->publish_state(sensitivity);
+            if (this->sensitivity_select_ != nullptr)
+              this->sensitivity_select_->publish_state(std::to_string(sensitivity));
+          }
+          break;
+        case 0x91:        // eFallBreakHeight
+          // TODO: need to implement
+          ESP_LOGD(TAG, "Unknown message con=0x%02X cmd=0x%02X", con, cmd);
+          break;
+        case 0x95:        // eHeightRatioSwitch
+          // TODO: need to implement
+          ESP_LOGD(TAG, "Unknown message con=0x%02X cmd=0x%02X", con, cmd);
+          break;
+        default:
+          ESP_LOGD(TAG, "Unknown message con=0x%02X cmd=0x%02X", con, cmd);
+          break;
+        }
+        break;
+
+      default:
+        ESP_LOGD(TAG, "Unknown message con=0x%02X cmd=0x%02X", con, cmd);
+        break;
+      }
+    }
+
     /*--------------*/
 
     uint16_t C1001Component::getFallData(eDmFall dm)
@@ -449,37 +536,37 @@ namespace esphome
       switch (dm)
       {
       case eFallState:
-        if (getData(0x83, 0x81, 1, &data, readBuf) == 0)
+        if (getData(FALL_DETECTION, 0x81, 1, &data, readBuf) == 0)
         {
           ret = readBuf[6];
         }
         break;
       case estaticResidencyState:
-        if (getData(0x83, 0x85, 1, &data, readBuf) == 0)
+        if (getData(FALL_DETECTION, 0x85, 1, &data, readBuf) == 0)
         {
           ret = readBuf[6];
         }
         break;
       case estaticResidencySwitch:
-        if (getData(0x83, 0x8B, 1, &data, readBuf) == 0)
+        if (getData(FALL_DETECTION, 0x8B, 1, &data, readBuf) == 0)
         {
           ret = readBuf[6];
         }
         break;
       case eFallSensitivity:
-        if (getData(0x83, 0x8D, 1, &data, readBuf) == 0)
+        if (getData(FALL_DETECTION, 0x8D, 1, &data, readBuf) == 0)
         {
           ret = readBuf[6];
         }
         break;
       case eFallBreakHeight:
-        if (getData(0x83, 0x91, 1, &data, readBuf) == 0)
+        if (getData(FALL_DETECTION, 0x91, 1, &data, readBuf) == 0)
         {
           ret = readBuf[6] << 8 | readBuf[7];
         }
         break;
       case eHeightRatioSwitch:
-        if (getData(0x83, 0x95, 1, &data, readBuf) == 0)
+        if (getData(FALL_DETECTION, 0x95, 1, &data, readBuf) == 0)
         {
           ret = readBuf[6];
         }
@@ -490,12 +577,24 @@ namespace esphome
       return ret;
     }
 
+    uint32_t C1001Component::getFirmwareVersion(void)
+    {
+        uint8_t readBuf[15];
+        uint8_t data = 0x0f;
+        uint32_t ret = 0;
+        if (getData(0x02, 0xA4, 1, &data, readBuf) == 0)
+        {
+            ret = readBuf[6] << 24 | readBuf[7] << 16 | readBuf[8] << 8 | readBuf[9];
+        }
+        return ret;
+    }
+
     uint32_t C1001Component::getFallTime(void)
     {
         uint8_t readBuf[15];
         uint8_t data = 0x0f;
         uint32_t ret = 0;
-        if (getData(0x83, 0x8c, 1, &data, readBuf) == 0)
+        if (getData(FALL_DETECTION, 0x8c, 1, &data, readBuf) == 0)
         {
             ret = readBuf[6] << 24 | readBuf[7] << 16 | readBuf[8] << 8 | readBuf[9];
         }
@@ -507,7 +606,7 @@ namespace esphome
       uint8_t readBuf[15];
       uint8_t data = 0x0f;
       uint32_t ret = 0;
-      if (getData(0x83, 0x8a, 1, &data, readBuf) == 0)
+      if (getData(FALL_DETECTION, 0x8a, 1, &data, readBuf) == 0)
       {
         ret = readBuf[6] << 24 | readBuf[7] << 16 | readBuf[8] << 8 | readBuf[9];
       }
@@ -567,25 +666,25 @@ namespace esphome
       switch (hm)
       {
       case eHumanPresence:
-        if (getData(0x80, 0x81, 1, &data, buf) == 0)
+        if (getData(HUMAN_PRESENCE, 0x81, 1, &data, buf) == 0)
         {
           ret = buf[6];
         }
         break;
       case eHumanMovement:
-        if (getData(0x80, 0x82, 1, &data, buf) == 0)
+        if (getData(HUMAN_PRESENCE, 0x82, 1, &data, buf) == 0)
         {
           ret = buf[6];
         }
         break;
       case eHumanMovingRange:
-        if (getData(0x80, 0x83, 1, &data, buf) == 0)
+        if (getData(HUMAN_PRESENCE, 0x83, 1, &data, buf) == 0)
         {
           ret = buf[6];
         }
         break;
       case eHumanDistance:
-        if (getData(0x80, 0x84, 1, &data, buf) == 0)
+        if (getData(HUMAN_PRESENCE, 0x84, 1, &data, buf) == 0)
         {
           ret = buf[6] << 8 | buf[7];
         }
@@ -601,7 +700,7 @@ namespace esphome
         uint8_t readBuf[15];
         uint8_t data = 0x0f;
         uint32_t ret = 0;
-        if (getData(0x80, 0x92, 1, &data, readBuf) == 0)
+        if (getData(HUMAN_PRESENCE, 0x92, 1, &data, readBuf) == 0)
         {
             ret = readBuf[6] << 24 | readBuf[7] << 16 | readBuf[8] << 8 | readBuf[9];
         }
@@ -618,14 +717,14 @@ namespace esphome
       case eFallBreakHeightC:
         sendBuf[0] = (data & 0xffff) >> 8;
         sendBuf[1] = data & 0xff;
-        if (getData(0x83, 0x11, 2, sendBuf, readBuf) == 0)
+        if (getData(FALL_DETECTION, 0x11, 2, sendBuf, readBuf) == 0)
         {
           ret = 0;
         }
         break;
       case eHeightRatioSwitchC:
         sendBuf[0] = data & 0xff;
-        if (getData(0x83, 0x15, 1, sendBuf, readBuf) == 0)
+        if (getData(FALL_DETECTION, 0x15, 1, sendBuf, readBuf) == 0)
         {
           ret = 0;
         }
@@ -635,14 +734,14 @@ namespace esphome
         sendBuf[1] = data >> 16 & 0xff;
         sendBuf[2] = data >> 8 & 0xff;
         sendBuf[3] = data & 0xff;
-        if (getData(0x83, 0x13, 4, sendBuf, readBuf) == 0)
+        if (getData(FALL_DETECTION, 0x13, 4, sendBuf, readBuf) == 0)
         {
           ret = 0;
         }
         break;
       case eReportSwitchC:
         sendBuf[0] = data & 0xff;
-        if (getData(0x83, 0x14, 1, sendBuf, readBuf) == 0)
+        if (getData(FALL_DETECTION, 0x14, 1, sendBuf, readBuf) == 0)
         {
           ret = 0;
         }
@@ -652,21 +751,21 @@ namespace esphome
         sendBuf[1] = data >> 16 & 0xff;
         sendBuf[2] = data >> 8 & 0xff;
         sendBuf[3] = data & 0xff;
-        if (getData(0x83, 0x0f, 4, sendBuf, readBuf) == 0)
+        if (getData(FALL_DETECTION, 0x0f, 4, sendBuf, readBuf) == 0)
         {
           ret = 0;
         }
         break;
       case eFallSensitivityC:
         sendBuf[0] = data & 0xff;
-        if (getData(0x83, 0x0D, 1, sendBuf, readBuf) == 0)
+        if (getData(FALL_DETECTION, 0x0D, 1, sendBuf, readBuf) == 0)
         {
           ret = 0;
         }
         break;
       case eResidenceSwitchC:
         sendBuf[0] = data & 0xff;
-        if (getData(0x83, 0x0b, 1, sendBuf, readBuf) == 0)
+        if (getData(FALL_DETECTION, 0x0b, 1, sendBuf, readBuf) == 0)
         {
           ret = 0;
         }
@@ -675,7 +774,7 @@ namespace esphome
         sendBuf[1] = data >> 16 & 0xff;
         sendBuf[2] = data >> 8 & 0xff;
         sendBuf[3] = data & 0xff;
-        if (getData(0x83, 0x0A, 4, sendBuf, readBuf) == 0)
+        if (getData(FALL_DETECTION, 0x0A, 4, sendBuf, readBuf) == 0)
         {
           ret = 0;
         }
@@ -696,7 +795,7 @@ namespace esphome
         buf[1] = Time >> 16 & 0xff;
         buf[2] = Time >> 8 & 0xff;
         buf[3] = Time & 0xff;
-        getData(0x80, 0x12, 4, buf, readBuf);
+        getData(HUMAN_PRESENCE, 0x12, 4, buf, readBuf);
     }
 
     void C1001Component::dmFallTime(uint32_t Time)
@@ -707,7 +806,7 @@ namespace esphome
         buf[1] = Time >> 16 & 0xff;
         buf[2] = Time >> 8 & 0xff;
         buf[3] = Time & 0xff;
-        getData(0x83, 0x0C, 4, buf, readBuf);
+        getData(FALL_DETECTION, 0x0C, 4, buf, readBuf);
     }
 
     void C1001Component::dmInstallHeight(uint16_t he)

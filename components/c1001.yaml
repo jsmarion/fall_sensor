@@ -158,6 +158,12 @@ c1001:
     fall_install_height:
       id: fall_install_height
       name: Fall install height
+    firmware_version:
+      id: firmware_version
+      name: Firmware version
+    # hp_led_switch:
+    #   id: hp_led_switch
+    #   name: Human Presence LED
 
 # text_sensor:
 #   - platform: c1001
@@ -173,6 +179,9 @@ switch:
     fall_led_switch:
       id: fall_switch
       name: Fall LED
+    hp_led_switch:
+      id: hp_led_switch
+      name: Human Presence LED
 
 number:
   - platform: c1001
