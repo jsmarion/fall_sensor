@@ -2,26 +2,24 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import uart, switch
 from esphome.const import CONF_ID, ICON_EMPTY, UNIT_EMPTY, DEVICE_CLASS_SWITCH, ENTITY_CATEGORY_CONFIG
+from .. import CONF_C1001_ID, C1001Component, c1001_ns
 
 AUTO_LOAD = [ 'switch' ]
 
-from .. import CONF_C1001_ID, C1001Component, c1001_ns
-
-
 # c1001_ns = cg.esphome_ns.namespace("c1001")
 
-C1001 = c1001_ns.class_("C1001Component", cg.PollingComponent, uart.UARTDevice)
+# C1001 = c1001_ns.class_("C1001Component", cg.PollingComponent, uart.UARTDevice)
 C1001FallLEDSwitch = c1001_ns.class_("C1001FallLEDSwitch", switch.Switch, cg.Component)
 C1001WorkModeSwitch = c1001_ns.class_("C1001WorkModeSwitch", switch.Switch, cg.Component)
 C1001HumanPresenceLEDSwitch = c1001_ns.class_("HumanPresenceLEDSwitch", switch.Switch, cg.Component)
 
-CONF_C1001 = "C1001"
+# CONF_C1001 = "C1001"
 CONF_LED_SWITCH = "fall_led_switch"
 CONF_MODE_SWITCH = "work_mode_switch"
 CONF_HP_LED_SWITCH = "hp_led_switch"
 
 CONFIG_SCHEMA = cv.Schema({
-    cv.GenerateID(CONF_C1001): cv.use_id(C1001),
+    cv.GenerateID(CONF_C1001_ID): cv.use_id(C1001Component),
     # cv.Optional(CONF_LED_SWITCH): switch.SWITCH_SCHEMA.extend({cv.GenerateID(): cv.declare_id(C1001FallLEDSwitch)}),
     # cv.Optional(CONF_MODE_SWITCH): switch.SWITCH_SCHEMA.extend({cv.GenerateID(): cv.declare_id(C1001WorkModeSwitch)}),
     cv.Optional(CONF_LED_SWITCH): switch.switch_schema(C1001FallLEDSwitch),

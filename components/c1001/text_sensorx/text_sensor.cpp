@@ -26,19 +26,5 @@ namespace esphome
       // publish_state("text_sensor state");
     }
 
-    // void C1001TextSensor::update()
-    // {
-    //   // if (this->messagelength > 0)
-    //   // { // if there's a message pending
-    //   //   ESP_LOGV(TAG, "processing latest message");
-    //   //   this->messagelength = 0;                            // indicate message is parsed
-    //   //   this->sensorupdateprogress = SOLIS_S5_SENSOR_COUNT; // start to update sensors
-    //   // }
-    //   // else
-    //   // {
-    //   //   ESP_LOGV(TAG, "no data received");
-    //   // }
-    // }
-
   } // namespace c1001
 } // namespace esphome

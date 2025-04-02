@@ -27,6 +27,7 @@ CONF_FALL_INSTALL_HEIGHT = "fall_install_height"
 CONF_FALL_FALL_TIME = "fall_fall_time"
 CONF_FALL_SENSITIVITY = "fall_sensitivity"
 CONF_FALL_EVENT = "fall_event"
+CONF_FALL_LED_STATE = "fall_led_state"
 CONF_FIRMWARE_VERSION = "firmware_version"
 # CONF_THE_SWITCH = "fall_led_switch"
 CONF_MODE = "mode_sensor"
@@ -52,6 +53,7 @@ CONFIG_SCHEMA = cv.Schema({
         state_class=STATE_CLASS_MEASUREMENT).extend(),
     cv.Optional(CONF_FALL_MOVEMENT_SPEED): text_sensor.text_sensor_schema(text_sensor.TextSensor).extend(),
     cv.Optional(CONF_FALL_PRESENCE): binary_sensor.binary_sensor_schema(binary_sensor.BinarySensor).extend(),
+    cv.Optional(CONF_FALL_LED_STATE): binary_sensor.binary_sensor_schema(binary_sensor.BinarySensor).extend(),
     cv.Optional(CONF_FALL_DWELL): binary_sensor.binary_sensor_schema(binary_sensor.BinarySensor).extend(),
     cv.Optional(CONF_FALL_DWELL_TIME): sensor.sensor_schema(
         device_class=DEVICE_CLASS_DURATION,
@@ -116,6 +118,10 @@ async def to_code(config):
     if CONF_FALL_PRESENCE in config:
         ms = await binary_sensor.new_binary_sensor(config[CONF_FALL_PRESENCE])
         cg.add(var.set_fall_presence_sensor(ms))
+
+    if CONF_FALL_LED_STATE in config:
+        ms = await binary_sensor.new_binary_sensor(config[CONF_FALL_LED_STATE])
+        cg.add(var.set_fall_led_state_sensor(ms))
 
     if CONF_FALL_DWELL in config:
         ms = await binary_sensor.new_binary_sensor(config[CONF_FALL_DWELL])

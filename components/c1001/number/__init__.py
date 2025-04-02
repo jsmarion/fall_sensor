@@ -1,15 +1,14 @@
 import esphome.codegen as cg
-from esphome.components import number
 import esphome.config_validation as cv
+from esphome.components import number
 from esphome.const import (
-    # CONF_ID,
-    # DEVICE_CLASS_ILLUMINANCE,
+    DEVICE_CLASS_DURATION,
     UNIT_SECOND,
     UNIT_CENTIMETER,
     ENTITY_CATEGORY_CONFIG,
     ICON_TIMELAPSE,
     DEVICE_CLASS_DISTANCE,
-    STATE_CLASS_MEASUREMENT
+    # STATE_CLASS_MEASUREMENT
 )
 from .. import CONF_C1001_ID, C1001Component, c1001_ns
 
@@ -29,21 +28,21 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional(CONF_DWELL_TIME_LIMIT): number.number_schema(
             DwellTimeNumber,
             unit_of_measurement=UNIT_SECOND,
-            # device_class=DEVICE_CLASS_ILLUMINANCE,
+            device_class=DEVICE_CLASS_DURATION,
             entity_category=ENTITY_CATEGORY_CONFIG,
             icon=ICON_TIMELAPSE,
         ),
         cv.Optional(CONF_UNMANNED_TIME_LIMIT): number.number_schema(
             UnmannedTimeNumber,
             unit_of_measurement=UNIT_SECOND,
-            # device_class=DEVICE_CLASS_ILLUMINANCE,
+            device_class=DEVICE_CLASS_DURATION,
             entity_category=ENTITY_CATEGORY_CONFIG,
             icon=ICON_TIMELAPSE,
         ),
         cv.Optional(CONF_FALL_TIME_LIMIT): number.number_schema(
             FallTimeNumber,
             unit_of_measurement=UNIT_SECOND,
-            # device_class=DEVICE_CLASS_ILLUMINANCE,
+            device_class=DEVICE_CLASS_DURATION,
             entity_category=ENTITY_CATEGORY_CONFIG,
             icon=ICON_TIMELAPSE,
         ),

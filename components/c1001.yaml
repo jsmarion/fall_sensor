@@ -77,8 +77,8 @@ uart:
   tx_pin: GPIO17
   rx_pin: GPIO16
   baud_rate: 115200
-  debug:
-    direction: BOTH
+  # debug:
+  #   direction: BOTH
 
 # custom_component:
 # - lambda: |-
@@ -137,6 +137,9 @@ c1001:
     fall_presence:
       id: fall_presence
       name: Fall presence
+    fall_led_state:
+      id: fall_led_state
+      name: Fall LED state
     fall_dwell:
       id: fall_dwell
       name: Fall dwell
@@ -164,6 +167,9 @@ c1001:
     # hp_led_switch:
     #   id: hp_led_switch
     #   name: Human Presence LED
+    # fall_led_state:
+    #   id: fall_led_state
+    #   name: Fall LED Light
 
 # text_sensor:
 #   - platform: c1001
@@ -209,11 +215,11 @@ button:
     restart:
       id: reset
       name: Reset
-
+      
 # binary_sensor:
 #  - platform: c1001
-#    c1001_binary_sensor:
-#      id: test_binary_sensor
+#    fall_led_state:
+#      id: fall_led_state
 #      name: Fall LED Light
 
 # sensor:

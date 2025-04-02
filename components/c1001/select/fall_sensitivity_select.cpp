@@ -7,8 +7,7 @@ namespace esphome
 
     void FallSensitivitySelect::control(const std::string &value)
     {
-      // this->publish_state(value);
-      // ESP_LOGD(TAG, "Setting fall sensitivity %d", std::stoi(value));
+      this->publish_state(value);
       this->parent_->dmFallConfig(eFallSensitivityC, std::stoi(value));
     }
 

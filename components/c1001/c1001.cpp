@@ -127,38 +127,41 @@ namespace esphome
             this->getFallData(eFallState);
             break;
           case 4:
-            this->getFallData(eFallSensitivity);
+            // this->getFallData(eFallSensitivity);
             break;
           case 5:
             this->getFallData(estaticResidencyState);
             break;
           case 6:
-            this->getStaticResidencyTime();
+            // this->getStaticResidencyTime();
             break;
           case 7:
-            this->getUnmannedTime();
+            // this->getUnmannedTime();
             break;
           case 8:
-            this->dmGetInstallHeight();
+            // this->dmGetInstallHeight();
             break;
           case 9:
-            this->getFallTime();
+            // this->getFallTime();
+            break;
+          case 10:
+            this->getLEDLightState(eFALLLed);
             break;
           }
-          last_loop_value = (last_loop_value + 1) % 10;
+          last_loop_value = (last_loop_value + 1) % 11;
           // publish_state(state);
         }
       }
 
-      if (loopwait > LOOP_WAIT)
-      { // some time has passed without receiving another character. this should be the end of a message.
+      if (loopwait > LOOP_WAIT) // some time has passed without receiving another character. this should be the end of a message.
+      { 
         // ESP_LOGV(TAG, "message recieved len=%d", index);
         if ((buffer[0] == 0x53) && (buffer[1] == 0x59) && (buffer[index - 2] == 0x54) && (buffer[index - 1] == 0x43))
         { // message starts with the right preamble
           uint16_t msglen = (buffer[4] << 8) | buffer[5];
           if (index != msglen + 9) // messasge has correct lengtheFallingMode
           {
-            ESP_LOGV(TAG, "message incorrect length (expected: %d, received: %d); discarding", msglen + 5, index);
+            ESP_LOGV(TAG, "message incorrect length (expected: %d, received: %d); parsing", msglen + 9, index);
 
             // ESP_LOGV(TAG, "Begin");
             static uint8_t temp[SERIAL_BUFFER_LEN] = {0};
@@ -193,7 +196,7 @@ namespace esphome
               }
               ii--;
             }
-            ESP_LOGV(TAG, "Done");
+            // ESP_LOGV(TAG, "Done");
           }
           else
           {
@@ -221,6 +224,7 @@ namespace esphome
     void C1001Component::dump_config()
     {
       ESP_LOGCONFIG(TAG, "C1001 fall sensor");
+      // TODO: add all components
     }
 
     void C1001Component::process_message(uint8_t *buffer)
@@ -244,14 +248,14 @@ namespace esphome
         case 0x03:
           if (msglen == 1)
           {
-            // memcpy(this->messagedata,buffer,SOLIS_S5_SERIAL_BUFFER_LEN); // copy message for processing on next update cycle
-            // this->messagelength = index; // length > 0 indicates the message data has been updated / ready for parsing
             // ESP_LOGD(TAG, "Fall LED mode change %d", buffer[6]);
             bool state = ((buffer[6] != 0) ? true : false);
             if (FallLEDCallback_ != NULL)
               FallLEDCallback_(state);
             if (FallLEDStateCallback_ != NULL)
               FallLEDStateCallback_(state);
+            if (this->fallledstatesensor != nullptr)
+              this->fallledstatesensor->publish_state(state);
           }
           break;
         case 0x04:
@@ -294,8 +298,6 @@ namespace esphome
         case 0xA8:
           if (msglen == 1)
           {
-            // memcpy(this->messagedata,buffer,SOLIS_S5_SERIAL_BUFFER_LEN); // copy message for processing on next update cycle
-            // this->messagelength = index; // length > 0 indicates the message data has been updated / ready for parsing
             // ESP_LOGD(TAG, "Publishing work mode %d", buffer[6]);
             bool state = ((buffer[6] == 1) ? false : true);
             if (WorkModeCallback_ != NULL)
@@ -368,13 +370,14 @@ namespace esphome
           if (msglen == 1)
           {
             ESP_LOGD(TAG, "Body stillness %d", buffer[6]);
+            // TODO: do something here
           }
           break;
         case 0x03:
           if (msglen == 1)
           {
             uint8_t state = buffer[6];
-            ESP_LOGD(TAG, "Body movement %d", state);
+            // ESP_LOGD(TAG, "Body movement %d", state);
             if (BodyMovementCallback_ != NULL)
               BodyMovementCallback_(state);
 
@@ -502,8 +505,8 @@ namespace esphome
             uint8_t sensitivity = (uint8_t)buffer[6];
             if (this->fallsensitivitysensor != nullptr)
               this->fallsensitivitysensor->publish_state(sensitivity);
-            if (this->sensitivity_select_ != nullptr)
-              this->sensitivity_select_->publish_state(std::to_string(sensitivity));
+            if (this->fall_sensitivity_select_ != nullptr)
+              this->fall_sensitivity_select_->publish_state(std::to_string(sensitivity));
           }
           break;
         case 0x91:        // eFallBreakHeight

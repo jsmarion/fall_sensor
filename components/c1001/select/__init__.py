@@ -1,6 +1,6 @@
 import esphome.codegen as cg
-from esphome.components import select
 import esphome.config_validation as cv
+from esphome.components import select
 from esphome.const import (
     ENTITY_CATEGORY_CONFIG,
     ICON_RULER,
@@ -20,18 +20,17 @@ CONFIG_SCHEMA = {
     ),
 }
 
-
 async def to_code(config):
     c1001_component = await cg.get_variable(config[CONF_C1001_ID])
     if fall_sensitivity_config := config.get(CONF_FALL_SENSITIVITY):
         s = await select.new_select(
             fall_sensitivity_config,
             options=[
-                "0",
+                # "0",
                 "1",
                 "2",
                 "3",
             ],
         )
         await cg.register_parented(s, config[CONF_C1001_ID])
-        cg.add(c1001_component.set_sensitivity_select(s))
+        cg.add(c1001_component.set_fall_sensitivity_select(s))

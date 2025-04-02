@@ -13,7 +13,6 @@ namespace esphome
       void setup() override;
       void dump_config() override;
       void set_parent(C1001Component *parent) { this->parent_ = parent; }
-      // void update() override;
       void loop() override;
 
     protected:
